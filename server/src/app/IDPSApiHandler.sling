@@ -1,0 +1,72 @@
+import jk.http.server
+import jk.http.worker
+
+class is HTTPRPCRouter #webapi2:
+
+model IdpsRequest
+{
+    fname as string
+    lname as string
+    email as string
+    password as string
+    re_password as string
+
+}
+
+GET "/task"
+{
+    var task = assert getDatabase().getTasks()
+    sendOk task
+}
+
+POST "/task"
+{
+    var reqData = assert IdpsRequest.forJsonString(req.getBodyString()):
+        sendError "invalidRequest"
+    var task = new IDPSDatabase.Task()
+    task.setFname(reqData.getFname())
+    task.setLname(reqData.getLname())
+    task.setEmail(reqData.getEmail())
+    task.setPassword(reqData.getPassword())
+    task.setRe_password(reqData.getRe_password())
+    assert getDatabase().addTask(task):
+        sendError "failedToSaveTask"
+    sendOk
+}
+
+PUT "/task/:id"
+{
+    var reqData = assert IdpsRequest.forJsonString(req.getBodyString()):
+        sendError "invalidRequest"
+    var task = new IDPSDatabase.Task()
+    task.setFname(reqData.getFname())
+    task.setLname(reqData.getLname())
+    task.setEmail(reqData.getEmail())
+    task.setPassword(reqData.getPassword())
+    task.setRe_password(reqData.getRe_password())
+    assert getDatabase().updateTask(vars.getString("id"), task):
+        sendError "failedToUpdateTask"
+    sendOk
+}
+
+DELETE "/task/:id"
+{
+    assert getDatabase().deleteTask(vars.getString("id")):
+        sendError "failedToDeleteTask"
+    sendOk
+}
+
+var db as IDPSDatabase
+var cor = IDPSConfig.getCorsUtil()
+
+func getDatabase as IDPSDatabase
+{
+    if not db {
+        db = IDPSDatabase.forContext(getCtx())
+        db.updateTables()
+    }
+    return db
+}
+
+func postProcess(req as HTTPWorkerRequest, resp as HTTPWorkerResponse) override:
+    cor.handleWorkerRequest(req, resp)

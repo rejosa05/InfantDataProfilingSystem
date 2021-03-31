@@ -1,0 +1,16 @@
+import jk.widget
+import jk.widget.common
+
+class is ScreenForWidget #screen #main:
+
+var nav as NavigationWidget
+
+func initialize override
+{
+    base.initialize()
+    nav = new NavigationWidget(context)
+    nav.setWidgetEnableActionBar(false)
+    setWidget(nav)
+    IDPSApiClient.create(context, nav)
+    nav.pushWidget(new IDPSRegistration(context))
+}
