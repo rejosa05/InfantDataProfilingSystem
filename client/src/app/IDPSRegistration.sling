@@ -3,7 +3,7 @@ import jk.widget.form
 
 class is TitledWidget #widget:
 
-model TaskModel
+model RegisterModel
 {
     fname as string
     lname as string
@@ -44,6 +44,27 @@ ui LayerWidget
                     TextButtonWidget addTaskButton{
                         text = "Register"
                         clickHandler = func{
+                            var task = new RegisterModel()
+                            task.setFname(fnameInput.getWidgetText())
+                            task.setLname(lnameInput.getWidgetText())
+                            task.setEmail(emailInput.getWidgetText())
+                            task.setPassword(passwordInput.getWidgetText())
+                            task.setRe_password(re_passwordInput.getWidgetText())
+                            IDPSApiClient.getInstance().addTask(task.toDynamicMap(),func(res as DynamicMap){
+                                println "added"
+                                var task = fnameInput.getWidgetText() .. "-" .. lnameInput.getWidgetText() .. "-" .. emailInput.getWidgetText() .. "-" .. passwordInput.getWidgetText() .. "-" .. re_passwordInput.getWidgetText()
+                                var lbltask = LabelWidget.forText(context, task)
+                                var hbox = HorizontalBoxWidget.forContext(context, 0, context.getHeightValue("0.5mm"))
+                                hbox.addWidget(lbltask)
+                                list.addWidget(AlignWidget.forWidget(context, hbox), 1.0)
+                                fnameInput.setWidgetText("")
+                                lnameInput.setWidgetText("")
+                                emailInput.setWidgetText("")
+                                passwordInput.setWidgetText("")
+                                re_passwordInput.setWidgetText("")
+                            },func(error as Error){
+                                println "failedtosave"
+                            })
                         }
                     }
                     
