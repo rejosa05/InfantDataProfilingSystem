@@ -1,0 +1,41 @@
+import jk.widget.common
+
+class #widget #main:
+
+model Login
+{
+    username as string
+    password as string
+}
+
+ui LayerWidget
+{
+    VerticalBoxWidget {
+		margin = context.getHeightValue("30mm")
+		//spacing = context.getHeightValue("20mm")
+		LayerWidget {
+			CanvasWidget {
+				color = Color.forString("black")
+			}
+			LayerWidget {
+				margin = context.getHeightValue("5mm")
+				LabelWidget myLabel {
+					text = "LOG IN"
+					textColor = Color.forString("white")
+					textAlign = LabelWidget.ALIGN_CENTER
+				}
+			}
+		}
+        TextInputWidget userInput{
+            placeholder = "Username"
+        }
+        TextInputWidget passwordInput{
+            placeholder = "Password"
+        }
+		ButtonWidget {
+			text = "Login"
+			clickHandler = func {
+			}
+		}
+	}
+}
