@@ -1,0 +1,76 @@
+import jk.sql
+
+class is IDPSDatabase:
+
+const INFANT = "infant_tbl"
+const USER = "idps_user"
+
+model TableModelInfant static
+{
+    intantId as int
+    infantFname as string
+    infantLname as string
+    infantMname as string
+    infantGender as string
+    infantCitizenship as string
+    infantFatherMaidenName as string
+    inftanMotherMaindenName as string
+    infantDateofBirth as long
+    infantPlaceofBirth as long
+    infantWeight as string
+    infantHeight as string
+    createdAt as long
+    updateAt as long
+}
+
+model TableModelUser static
+{
+    userId as int
+    userFname as string
+    userFname as string
+    userEmail as string
+    username as string
+    password as string
+    re_password as string
+    createAt as long
+    updateAt as long
+}
+
+func createTableInfant as SQLTableInfo
+{
+    var tbl = SQLTableInfo.forName(INFANT)
+
+    tbl.addIntegerKeyColumn("infantId")
+    tbl.addStringColumn("infantFname")
+    tbl.addStringColumn("infantLname")
+    tbl.addStringColumn("infantMname")
+    tbl.addStringColumn("infantGender")
+    tbl.addStringColumn("infantCitizenship")
+    tbl.addStringColumn("infantFatherMaidenName")
+    tbl.addStringColumn("infantMotherMaidenName")
+    tbl.addLongColumn("infantBirthofDate")
+    tbl.addStringColumn("infantPlaceofBirth")
+    tbl.addStringColumn("infantWeight")
+    tbl.addStringColumn("infantHeight")
+    tbl.addLongColumn("createAt")
+    tbl.addLongColumn("updateAt")
+
+    return tbl
+}
+
+func createTableUser as SQLTableInfo
+{
+    var tbl = SQLTableInfo.forName(USER)
+
+    tbl.addIntegerKeyColumn("userId")
+    tbl.addStringColumn("userFname")
+    tbl.addStringColumn("userLname")
+    tbl.addStringColum("userEmail")
+    tbl.addStringColumn("username")
+    tbl.addStringColumn("password")
+    tbl.addStringColumn("re_password")
+    tbl.addLongColumn("createAt")
+    tbl.addLongColumn("updateAt")
+
+    return tbl
+}
