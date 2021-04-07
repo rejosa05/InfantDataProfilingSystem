@@ -1,0 +1,70 @@
+import jk.widget.common
+import jk.widget
+
+class is TitledWidget #widget:
+
+model Infant
+{
+    id as string
+    fname as string
+    lname as string
+    email as string
+    user as string
+    password as string
+    re_password as string
+}
+
+ui LayerWidget
+{
+    VerticalBoxWidget {
+		margin = context.getHeightValue("40mm")
+		spacing = context.getHeightValue("0.5mm")
+		LayerWidget {
+			CanvasWidget {
+				color = Color.forString("black")
+			}
+			LayerWidget {
+				margin = context.getHeightValue("5mm")
+				LabelWidget myLabel {
+					text = "INFANT REGISTRATION"
+					textColor = Color.forString("white")
+					textAlign = LabelWidget.ALIGN_CENTER
+				}
+			}
+		}
+        TextInputWidget lnameInput{
+            placeholder = "Last Name"
+        }
+        TextInputWidget fnameInput{
+            placeholder = "First Name"
+        }
+        TextInputWidget emailInput{
+            placeholder = "Email@email.com"
+        }
+        TextInputWidget userInput{
+            placeholder = "Username"
+        }
+        TextInputWidget passwordInput{
+            placeholder = "Password"
+        }
+        TextInputWidget re_passwordInput{
+            placeholder = "Re Enter Passsword"
+        }
+        TextButtonWidget addTaskButton{
+            text = "Register"
+        }
+		TextButtonWidget registerButton{
+			text = "Back to Login"
+			textColor = Color.instance("#87CEFA")
+			clickHandler = func {
+				var thisWidget final = this
+				var nav = NavigationWidget.findNavigationWidget(thisWidget)
+				nav.popWidget()
+				nav.pushWidget(new IDPSRegistration(context))
+			}
+		}
+	}
+}
+
+func getWidgetTitle as string:
+    return "Infant Form"
