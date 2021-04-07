@@ -14,68 +14,87 @@ model RegisterModel
 
 ui LayerWidget
 {
-    VerticalScrollerWidget{
-        scrollBarDisabled = false
-        LayerWithBackgroundColorWidget container{
-            color = Color.white()
-            HorizontalBoxWidget{
-                VerticalBoxWidget form{
-                    AlignWidget{
-                        margin = 1.0
-                        LabelWidget submitMessage{
-                            text = "Registration"
-                        }
-                    }
-                    TextInputWidget fnameInput{
-                        placeholder = "FirstName"
-                    }
-                    TextInputWidget lnameInput{
-                        placeholder = "LastName"
-                    }
-                    TextInputWidget emailInput{
-                        placeholder = "Email@email.com"
-                    }
-                    TextInputWidget passwordInput{
-                        placeholder = "Password"
-                    }
-                    TextInputWidget re_passwordInput{
-                        placeholder = "ReEnter Passsword"
-                    }
-                    TextButtonWidget addTaskButton{
-                        text = "Register"
-                        clickHandler = func{
-                            var task = new RegisterModel()
-                            task.setFname(fnameInput.getWidgetText())
-                            task.setLname(lnameInput.getWidgetText())
-                            task.setEmail(emailInput.getWidgetText())
-                            task.setPassword(passwordInput.getWidgetText())
-                            task.setRe_password(re_passwordInput.getWidgetText())
-                            IDPSApiClient.getInstance().addTask(task.toDynamicMap(),func(res as DynamicMap){
-                                println "added"
-                                var task = fnameInput.getWidgetText() .. "-" .. lnameInput.getWidgetText() .. "-" .. emailInput.getWidgetText() .. "-" .. passwordInput.getWidgetText() .. "-" .. re_passwordInput.getWidgetText()
-                                var lbltask = LabelWidget.forText(context, task)
-                                var hbox = HorizontalBoxWidget.forContext(context, 0, context.getHeightValue("0.5mm"))
-                                hbox.addWidget(lbltask)
-                                list.addWidget(AlignWidget.forWidget(context, hbox), 1.0)
-                                fnameInput.setWidgetText("")
-                                lnameInput.setWidgetText("")
-                                emailInput.setWidgetText("")
-                                passwordInput.setWidgetText("")
-                                re_passwordInput.setWidgetText("")
-                            },func(error as Error){
-                                println "failedtosave"
-                            })
-                        }
-                    }
-                    
+    VerticalBoxWidget {
+		margin = context.getHeightValue("40mm")
+		spacing = context.getHeightValue("0.5mm")
+		LayerWidget {
+			CanvasWidget {
+				color = Color.forString("black")
+			}
+			LayerWidget {
+				margin = context.getHeightValue("5mm")
+                
+				LabelWidget myLabel {
+					text = "REGISTRATION"
+					textColor = Color.forString("white")
+					textAlign = LabelWidget.ALIGN_CENTER
+				}
+                LabelWidget submitMessage{
+                    text = ""
                 }
-                VerticalBoxWidget list{
-                    margin = context.getHeightValue("5mm")
-                    spacing = context.getHeightValue("5mm")
-                }
+			}
+		}
+        TextInputWidget fnameInput{
+            placeholder = "First Name"
+        }
+        TextInputWidget lnameInput{
+            placeholder = "Last Name"
+        }
+        TextInputWidget emailInput{
+            placeholder = "Email@email.com"
+        }
+        TextInputWidget userInput{
+            placeholder = "Username"
+        }
+        TextInputWidget passwordInput{
+            placeholder = "Password"
+        }
+        TextInputWidget re_passwordInput{
+            placeholder = "Re Enter Passsword"
+        }
+        TextButtonWidget addTaskButton{
+            text = "Register"
+            clickHandler = func{
+                var task = new Register()
+                task.setFname(fnameInput.getWidgetText())
+                task.setLname(lnameInput.getWidgetText())
+                task.setEmail(emailInput.getWidgetText())
+                task.setUser(userInput.getWidgetText())
+                task.setPassword(passwordInput.getWidgetText())
+                task.setRe_password(re_passwordInput.getWidgetText())
+                IDPSApiClient.getInstance().addUser(task.toDynamicMap(), func(res as DynamicMap){
+                    submitMessage.setWidgetText("Successfully Added")
+                    var task = fnameInput.getWidgetText() .. "-" .. lnameInput.getWidgetText() .. "-" .. emailInput.getWidgetText() .. "-" .. passwordInput.getWidgetText() .. "-" .. re_passwordInput.getWidgetText() .. "=" .. userInput.getWidgetText()
+                    var lbltask = LabelWidget.forText(context, task)
+                    var hbox = HorizontalBoxWidget.forContext(context, 0, context.getHeightValue("0.5mm"))
+                    hbox.addWidget(lbltask) 
+                    list.addWidget(AlignWidget.forWidget(context, hbox), 1.0)
+                    fnameInput.setWidgetText("")
+                    lnameInput.setWidgetText("")
+                    emailInput.setWidgetText("")
+                    userInput.setWidgetText("")
+                    passwordInput.setWidgetText("")
+                    re_passwordInput.setWidgetText("")
+                },func(error as Error){
+                    submitMessage.setWidgetText("Failed")
+                })
             }
         }
-    }
+		TextButtonWidget registerButton{
+			text = "Back to Login"
+			textColor = Color.instance("#87CEFA")
+			clickHandler = func {
+				var thisWidget final = this
+				var nav = NavigationWidget.findNavigationWidget(thisWidget)
+				nav.popWidget()
+				nav.pushWidget(new IDPSLogin(context))
+			}
+		}
+        VerticalBoxWidget list{
+            margin = context.getHeightValue("5mm")
+            spacing = context.getHeightValue("5mm")
+        }
+	}
 }
 
 func getWidgetTitle as string:
