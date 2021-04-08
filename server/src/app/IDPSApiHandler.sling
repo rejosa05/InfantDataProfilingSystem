@@ -3,57 +3,44 @@ import jk.http.worker
 
 class is HTTPRPCRouter #webapi2:
 
-model IdpsRequest
+GET "/infants"
 {
-    fname as string
-    lname as string
-    email as string
-    password as string
-    re_password as string
-
+    var infant = assert IDPSTable.getAllInfant(getDatabase().getDb())
+    sendOk infant
 }
 
-GET "/task"
+GET "/user"
 {
-    var task = assert getDatabase().getTasks()
-    sendOk task
+    var user = assert IDPSTable.getAllUser(getDatabase().getDb())
+    sendOk user
 }
 
-POST "/task"
+POST "/user"
 {
-    var reqData = assert IdpsRequest.forJsonString(req.getBodyString()):
+    var reqData = assert IDPSTable.TableModelUser.forJsonString(req.getBodyString()):
         sendError "invalidRequest"
-    var task = new IDPSDatabase.Task()
-    task.setFname(reqData.getFname())
-    task.setLname(reqData.getLname())
-    task.setEmail(reqData.getEmail())
-    task.setPassword(reqData.getPassword())
-    task.setRe_password(reqData.getRe_password())
-    assert getDatabase().addTask(task):
+    var user = new IDPSTable.TableModelUser
+    user.setUserFname(reqData.getUserFname())
+    user.setUserLname(reqData.getUserLname())
+    user.setUserEmail(reqData.getUserEmail())
+    user.setUsername(reqData.getUsername())
+    user.setPassword(reqData.getPassword())
+    user.setRe_password(reqData.getRe_password())
+    var username = assert IDPSTable.addUser(getDatabase().getDb(), user):
         sendError "failedToSaveTask"
-    sendOk
+    sendOk username
+}
+
+POST "/infants"
+{
 }
 
 PUT "/task/:id"
 {
-    var reqData = assert IdpsRequest.forJsonString(req.getBodyString()):
-        sendError "invalidRequest"
-    var task = new IDPSDatabase.Task()
-    task.setFname(reqData.getFname())
-    task.setLname(reqData.getLname())
-    task.setEmail(reqData.getEmail())
-    task.setPassword(reqData.getPassword())
-    task.setRe_password(reqData.getRe_password())
-    assert getDatabase().updateTask(vars.getString("id"), task):
-        sendError "failedToUpdateTask"
-    sendOk
 }
 
 DELETE "/task/:id"
 {
-    assert getDatabase().deleteTask(vars.getString("id")):
-        sendError "failedToDeleteTask"
-    sendOk
 }
 
 var db as IDPSDatabase
