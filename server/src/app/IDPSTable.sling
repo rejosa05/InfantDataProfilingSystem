@@ -76,3 +76,59 @@ func createTableUser as SQLTableInfo
 
     return tbl
 }
+
+// add to user
+func addUser(db as MySQLDatabase, user as TableModelUser) as TableModelUser
+{
+    assert user
+    user.setCreatedAtValue(SystemClock.asUTCSeconds())
+    assert db.executeSync(db.prepareInsertStatementSync(USER, user.toDynamicMap()))
+    return user
+}
+
+// add to infant
+func addInfant(db as MySQLDatabase, infant as TableModelInfant) as TableModelInfant
+{
+    assert infant
+    infant.setCreatedAtValue(SystemClock.asUTCSeconds())
+    assert db.executeSync(db.prepareInsertStatementSync(INFANT, infant.toDynamicMap()))
+    return infant
+}
+
+func getAllInfant (db as MySQLDatabase) as DynamicMap
+{
+    var v = new vector<TableModelInfant>
+    var it = assert db.querySync(db.prepareQueryAllStatementSync(INFANT)):
+        return null
+    while it {
+        var o = it.next()
+        if not o:
+            break
+        var infant = TableModelInfant.forJsonObject(o)
+        if not infant:
+            continue
+        v += infant
+    }
+    var d = new DynamicMap()
+    d.setObject("records", v)
+    return d
+}
+
+func getAllUser (db as MySQLDatabase) as DynamicMap
+{
+    var v = new vector<TableModelUser>
+    var it = assert db.querySync(db.prepareQueryAllStatementSync(USER)):
+        return null
+    while it {
+        var o = it.next()
+        if not o:
+            break
+        var infant = TableModelUser.forJsonObject(o)
+        if not infant:
+            continue
+        v += infant
+    }
+    var d = new DynamicMap()
+    d.setObject("records", v)
+    return d
+}
