@@ -7,21 +7,7 @@ import jk.time
 
 class:
 
-model Task
-{
-    id as string
-    fname as string
-    lname as string
-    email as string
-    password as string
-    re_password as string
-    timeStampAdded as long
-    timeStampLastUpdated as long
-}
-
-const IDPS = "idps"
 pvar db as MySQLDatabase
-
 
 func forContext(ctx as LoggingContext) static as this
 {
@@ -48,59 +34,8 @@ func updateTable(tbl as SQLTableInfo)
 
 func updateTables
 {
-    var data = SQLTableInfo.forName(IDPS)
-    data.addStringKeyColumn("id")
-    data.addStringColumn("fname")
-    data.addStringColumn("email")
-    data.addStringColumn("password")
-    data.addStringColumn("re_password")
-    data.addLongColumn("timeStampAdded")
-    data.addLongColumn("timeStampAddedUpdated")
-    updateTable(data)
-}
-
-func addTask(task as Task) as Task
-{
-    assert task
-    task.setId("1")
-    task.setTimeStampAddedValue(SystemClock.asUTCSeconds() )
-    assert db.executeSync(db.prepareInsertStatementSync(IDPS, task.toDynamicMap()))
-    return task
-}
-
-func updateTask(id as string, task as Task) as bool
-{
-    assert task
-    task.setTimeStampLastUpdatedValue(SystemClock.asUTCSeconds())
-    var ct = new Task()
-    ct.setId(id)
-    return db.executeSync(db.prepareUpdateStatementSync(IDPS, ct.toDynamicMap(), task.toDynamicMap()))
-}
-
-func deleteTask(id as string) as bool
-{
-    var ct = new Task()
-    ct.setId(id)
-    return db.executeSync(db.prepareInsertStatementSync(IDPS, ct.toDynamicMap()))
-}
-
-func getTasks as DynamicMap
-{
-    var v = new vector<Task>
-    var it = assert db.querySync(db.prepareQueryAllStatementSync(IDPS)):
-        return null
-    while it {
-        var o = it.next()
-        if not o:
-            break
-        var task = Task.forJsonObject(o)
-        if not task:
-            continue
-        v += task
-    }
-    var d = new DynamicMap()
-    d.setObject("records", v)
-    return d
+    updateTable(IDPSTable.createTableInfant())
+    updateTable(IDPSTable.createTableUser())
 }
 
 func close
