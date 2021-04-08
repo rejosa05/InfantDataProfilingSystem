@@ -1,18 +1,19 @@
 import jk.widget.common
+import jk.widget
 
-class #widget #main:
+class is TitledWidget #widget:
 
 model Login
 {
-    username as string
+    user as string
     password as string
 }
 
 ui LayerWidget
 {
     VerticalBoxWidget {
-		margin = context.getHeightValue("30mm")
-		//spacing = context.getHeightValue("20mm")
+		margin = context.getHeightValue("40mm")
+		spacing = context.getHeightValue("0.5mm")
 		LayerWidget {
 			CanvasWidget {
 				color = Color.forString("black")
@@ -28,14 +29,33 @@ ui LayerWidget
 		}
         TextInputWidget userInput{
             placeholder = "Username"
+			fontSize = context.getHeightValue("5mm")
         }
         TextInputWidget passwordInput{
             placeholder = "Password"
+			fontSize = context.getHeightValue("5mm")
+			type = TextInputWidget.TYPE_PASSWORD
         }
-		ButtonWidget {
+		ButtonWidget loginButton{
 			text = "Login"
 			clickHandler = func {
+				var thisWidget final = this
+				var nav = NavigationWidget.findNavigationWidget(thisWidget)
+				nav.pushWidget(new IDPSDashboard(context))
+			}
+		}
+		ButtonWidget registerButton{
+			text = "Registration"
+			textColor = Color.instance("#87CEFA")
+			clickHandler = func {
+				var thisWidget final = this
+				var nav = NavigationWidget.findNavigationWidget(thisWidget)
+				nav.popWidget()
+				nav.pushWidget(new IDPSRegistration(context))
 			}
 		}
 	}
 }
+
+func getWidgetTitle as string:
+	return "Login"
