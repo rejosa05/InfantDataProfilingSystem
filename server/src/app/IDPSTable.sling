@@ -65,7 +65,7 @@ func createTableUser as SQLTableInfo
     tbl.addIntegerKeyColumn("userId")
     tbl.addStringColumn("userFname")
     tbl.addStringColumn("userLname")
-    tbl.addStringColum("userEmail")
+    tbl.addStringColumn("userEmail")
     tbl.addStringColumn("username")
     tbl.addStringColumn("password")
     tbl.addStringColumn("re_password")
