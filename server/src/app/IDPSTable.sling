@@ -1,4 +1,6 @@
 import jk.sql
+import jk.myql
+import jk.time
 
 class is IDPSDatabase:
 
@@ -20,7 +22,7 @@ model TableModelInfant static
     infantWeight as string
     infantHeight as string
     createdAt as long
-    updateAt as long
+    updatedAt as long
 }
 
 model TableModelUser static
@@ -32,8 +34,8 @@ model TableModelUser static
     username as string
     password as string
     re_password as string
-    createAt as long
-    updateAt as long
+    createdAt as long
+    updatedAt as long
 }
 
 func createTableInfant as SQLTableInfo
@@ -52,8 +54,8 @@ func createTableInfant as SQLTableInfo
     tbl.addStringColumn("infantPlaceofBirth")
     tbl.addStringColumn("infantWeight")
     tbl.addStringColumn("infantHeight")
-    tbl.addLongColumn("createAt")
-    tbl.addLongColumn("updateAt")
+    tbl.addLongColumn("createdAt")
+    tbl.addLongColumn("updatedAt")
 
     return tbl
 }
@@ -69,8 +71,8 @@ func createTableUser as SQLTableInfo
     tbl.addStringColumn("username")
     tbl.addStringColumn("password")
     tbl.addStringColumn("re_password")
-    tbl.addLongColumn("createAt")
-    tbl.addLongColumn("updateAt")
+    tbl.addLongColumn("createdAt")
+    tbl.addLongColumn("updatedAt")
 
     return tbl
 }
