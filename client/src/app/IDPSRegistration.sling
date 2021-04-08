@@ -52,7 +52,7 @@ ui LayerWidget
         TextInputWidget re_passwordInput{
             placeholder = "Re Enter Passsword"
         }
-        TextButtonWidget addTaskButton{
+        ButtonWidget registerButton{
             text = "Register"
             clickHandler = func{
                 var task = new Register()
@@ -64,17 +64,13 @@ ui LayerWidget
                 task.setRe_password(re_passwordInput.getWidgetText())
                 IDPSApiClient.getInstance().addUser(task.toDynamicMap(), func(res as DynamicMap){
                     submitMessage.setWidgetText("Successfully Added")
-                    var task = fnameInput.getWidgetText() .. "-" .. lnameInput.getWidgetText() .. "-" .. emailInput.getWidgetText() .. "-" .. passwordInput.getWidgetText() .. "-" .. re_passwordInput.getWidgetText() .. "=" .. userInput.getWidgetText()
-                    var lbltask = LabelWidget.forText(context, task)
-                    var hbox = HorizontalBoxWidget.forContext(context, 0, context.getHeightValue("0.5mm"))
-                    hbox.addWidget(lbltask) 
-                    list.addWidget(AlignWidget.forWidget(context, hbox), 1.0)
                     fnameInput.setWidgetText("")
                     lnameInput.setWidgetText("")
                     emailInput.setWidgetText("")
                     userInput.setWidgetText("")
                     passwordInput.setWidgetText("")
                     re_passwordInput.setWidgetText("")
+                    println "1"
                 },func(error as Error){
                     submitMessage.setWidgetText("Failed")
                 })
