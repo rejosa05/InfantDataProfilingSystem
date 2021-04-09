@@ -1,2 +1,3 @@
 Portserver: 30221
 Portclient: 30222
+Export Database: export IDPS_DATABASE="localhost:rolly:rolly:idpsdb:ssl:utf8"
