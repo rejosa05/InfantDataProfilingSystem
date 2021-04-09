@@ -3,7 +3,7 @@ import jk.widget
 
 class is TitledWidget #widget:
 
-model ModelUser static
+model ModelUser
 {
     fname as string
     lname as string
