@@ -3,46 +3,6 @@ import jk.http.worker
 
 class is HTTPRPCRouter #webapi2:
 
-GET "/infants"
-{
-    var infant = assert IDPSTable.getAllInfant(getDatabase().getDb())
-    sendOk infant
-}
-
-GET "/user"
-{
-    var user = assert IDPSTable.getAllUser(getDatabase().getDb())
-    sendOk user
-}
-
-POST "/user"
-{
-    var reqData = assert IDPSTable.TableModelUser.forJsonString(req.getBodyString()):
-        sendError "invalidRequest"
-    var user = new IDPSTable.TableModelUser
-    user.setUserFname(reqData.getUserFname())
-    user.setUserLname(reqData.getUserLname())
-    user.setUserEmail(reqData.getUserEmail())
-    user.setUsername(reqData.getUsername())
-    user.setPassword(reqData.getPassword())
-    user.setRe_password(reqData.getRe_password())
-    var username = assert IDPSTable.addUser(getDatabase().getDb(), user):
-        sendError "failedToSaveTask"
-    sendOk username
-}
-
-POST "/infants"
-{
-}
-
-PUT "/task/:id"
-{
-}
-
-DELETE "/task/:id"
-{
-}
-
 var db as IDPSDatabase
 var cor = IDPSConfig.getCorsUtil()
 
@@ -57,3 +17,86 @@ func getDatabase as IDPSDatabase
 
 func postProcess(req as HTTPWorkerRequest, resp as HTTPWorkerResponse) override:
     cor.handleWorkerRequest(req, resp)
+
+
+model RequestInfant
+{
+    infantFname as string
+    infantLname as string
+    infantMname as string
+    infantGender as string
+    infantCitizenship as string
+    infantFatherMaidenName as string
+    infantMotherMaidenName as string
+    infantDateofBirth as long
+    infantPlaceofBirth as string
+    infantWeight as string
+    infantHeight as string
+}
+
+model RequestlUser
+{
+    userFname as string
+    userLname as string
+    userEmail as string
+    username as string
+    password as string
+    re_password as string
+}
+
+GET "/getinfant"
+{
+    var infant = assert IDPSTable.getAllInfant(getDatabase().getDb())
+    sendOk infant
+}
+
+GET "/getuser"
+{
+    var user = assert IDPSTable.getAllUser(getDatabase().getDb())
+    sendOk user
+}
+
+POST "/insertuser"
+{
+    var reqData = assert RequestlUser.forJsonString(req.getBodyString()):
+        sendError "invalidRequest"
+    var u = new IDPSTable.TableModelUser
+    u.setUserFname(reqData.getUserFname())
+    u.setUserLname(reqData.getUserLname())
+    u.setUserEmail(reqData.getUserEmail())
+    u.setUsername(reqData.getUsername())
+    u.setPassword(reqData.getPassword())
+    u.setRe_password(reqData.getRe_password())
+    assert IDPSTable.createUsers(getDatabase().getDb(), u):
+        sendError "failedToSave"
+    sendOk
+}
+
+POST "/insertinfant"
+{
+    var reqData = assert RequestInfant.forJsonString(req.getBodyString()):
+        sendError "invalidRequest"
+    var infnt = new IDPSTable.TableModelInfant()
+    infnt.setInfantFname(reqData.getInfantFname())
+    infnt.setInfantLname(reqData.getInfantLname())
+    infnt.setInfantMname(reqData.getInfantMname())
+    infnt.setInfantGender(reqData.getInfantGender())
+    infnt.setInfantCitizenship(reqData.getInfantCitizenship())
+    infnt.setInfantFatherMaidenName(reqData.getInfantFatherMaidenName())
+    infnt.setInfantMotherMaidenName(reqData.getInfantMotherMaidenName())
+    infnt.setInfantDateofBirth(reqData.getInfantDateofBirth())
+    infnt.setInfantPlaceofBirth(reqData.getInfantPlaceofBirth())
+    infnt.setInfantWeight(reqData.getInfantWeight())
+    infnt.setInfantHeight(reqData.getInfantHeight())
+    assert IDPSTable.createInfants(getDatabase().getDb(), infnt):
+        sendError "failedToSave"
+    sendOk
+}
+
+PUT "/task/:id"
+{
+}
+
+DELETE "/task/:id"
+{
+}
