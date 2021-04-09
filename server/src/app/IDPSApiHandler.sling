@@ -34,7 +34,7 @@ model RequestInfant
     infantHeight as string
 }
 
-model RequestlUser
+model RequestUser
 {
     userFname as string
     userLname as string
