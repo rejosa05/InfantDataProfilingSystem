@@ -1,8 +1,9 @@
 import jk.sql
-import jk.myql
+import jk.mysql
 import jk.time
+import jk.env
 
-class is IDPSDatabase:
+class:
 
 const INFANT = "infant_tbl"
 const USER = "idps_user"
@@ -16,9 +17,9 @@ model TableModelInfant static
     infantGender as string
     infantCitizenship as string
     infantFatherMaidenName as string
-    inftanMotherMaindenName as string
+    infantMotherMaidenName as string
     infantDateofBirth as long
-    infantPlaceofBirth as long
+    infantPlaceofBirth as string
     infantWeight as string
     infantHeight as string
     createdAt as long
@@ -29,7 +30,7 @@ model TableModelUser static
 {
     userId as int
     userFname as string
-    userFname as string
+    userLname as string
     userEmail as string
     username as string
     password as string
@@ -77,17 +78,17 @@ func createTableUser as SQLTableInfo
     return tbl
 }
 
-// add to user
-func addUser(db as MySQLDatabase, user as TableModelUser) as TableModelUser
+// add to user table
+func createUsers(db as MySQLDatabase, usermodel as TableModelUser) as TableModelUser
 {
-    assert user
-    user.setCreatedAtValue(SystemClock.asUTCSeconds())
-    assert db.executeSync(db.prepareInsertStatementSync(USER, user.toDynamicMap()))
-    return user
+    assert usermodel
+    usermodel.setCreatedAtValue(SystemClock.asUTCSeconds())
+    assert db.executeSync(db.prepareInsertStatementSync(USER, usermodel.toDynamicMap()))
+    return usermodel
 }
 
-// add to infant
-func addInfant(db as MySQLDatabase, infant as TableModelInfant) as TableModelInfant
+// add to infant table
+func createInfants(db as MySQLDatabase, infant as TableModelInfant) as TableModelInfant
 {
     assert infant
     infant.setCreatedAtValue(SystemClock.asUTCSeconds())
