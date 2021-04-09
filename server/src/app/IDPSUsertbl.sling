@@ -1,0 +1,64 @@
+import jk.sql
+import jk.mysql
+import jk.time
+
+class is IDPSDatabase:
+
+const USER = "idps_user"
+
+model TableModelUser static
+{
+    userId as int
+    userFname as string
+    userLname as string
+    userEmail as string
+    username as string
+    password as string
+    re_password as string
+    createdAt as long
+    updatedAt as long
+}
+
+func createTableUser as SQLTableInfo
+{
+    var tbl = SQLTableInfo.forName(USER)
+
+    tbl.addIntegerKeyColumn("userId")
+    tbl.addStringColumn("userFname")
+    tbl.addStringColumn("userLname")
+    tbl.addStringColumn("userEmail")
+    tbl.addStringColumn("username")
+    tbl.addStringColumn("password")
+    tbl.addStringColumn("re_password")
+    tbl.addLongColumn("createdAt")
+    tbl.addLongColumn("updatedAt")
+
+    return tbl
+}
+
+func createUsers(db as MySQLDatabase, usermodel as TableModelUser) as TableModelUser
+{
+    assert usermodel
+    usermodel.setCreatedAtValue(SystemClock.asUTCSeconds())
+    assert db.executeSync(db.prepareInsertStatementSync(USER, usermodel.toDynamicMap()))
+    return usermodel
+}
+
+func getAllUser (db as MySQLDatabase) as DynamicMap
+{
+    var v = new vector<TableModelUser>
+    var it = assert db.querySync(db.prepareQueryAllStatementSync(USER)):
+        return null
+    while it {
+        var o = it.next()
+        if not o:
+            break
+        var infant = TableModelUser.forJsonObject(o)
+        if not infant:
+            continue
+        v += infant
+    }
+    var d = new DynamicMap()
+    d.setObject("records", v)
+    return d
+}
