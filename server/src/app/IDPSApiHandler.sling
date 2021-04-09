@@ -58,7 +58,7 @@ GET "/getuser"
 
 POST "/insertuser"
 {
-    var reqData = assert RequestlUser.forJsonString(req.getBodyString()):
+    var reqData = assert RequestUser.forJsonString(req.getBodyString()):
         sendError "invalidRequest"
     var u = new IDPSTable.TableModelUser
     u.setUserFname(reqData.getUserFname())
