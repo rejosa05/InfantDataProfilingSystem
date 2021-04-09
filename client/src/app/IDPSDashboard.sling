@@ -1,59 +1,42 @@
 import jk.widget.common
-import jk.widget
 
 class is TitledWidget #widget:
 
 ui LayerWidget
 {
-    VerticalBoxWidget {
-		margin = context.getHeightValue("40mm")
-		spacing = context.getHeightValue("0.5mm")
-		LayerWidget {
-			CanvasWidget {
-				color = Color.forString("black")
-			}
-			LayerWidget {
-				margin = context.getHeightValue("5mm")
-				LabelWidget myLabel {
-					text = "REGISTRATION"
-					textColor = Color.forString("white")
-					textAlign = LabelWidget.ALIGN_CENTER
-				}
-			}
-		}
-        TextInputWidget lnameInput{
-            placeholder = "Last Name"
+    VerticalScrollerWidget {
+        scrollBarDisabled = true
+        LayerWithBackgroundColorWidget container {
+            color = Color.white()
+            VerticalBoxWidget list {
+                margin = context.getHeightValue("5mm")
+                spacing = context.getHeightValue("5mm")
+            }
         }
-        TextInputWidget fnameInput{
-            placeholder = "First Name"
+    }    
+}
+
+func initializeWidget override
+{
+    base.initializeWidget()
+    IDPSApiClient.getInstance().getUser(func(response as DynamicMap) {
+        var data = assert response.getDynamicMap("data")
+        var records = data.getDynamicVector("records")
+        if not records ||  records.getSize() < 1 {
+            list.addWidget(AlignWidget.forWidget(context, LabelWidget.forText(context, "No record")), 1.0)
         }
-        TextInputWidget emailInput{
-            placeholder = "Email@email.com"
+        else {
+            foreach record as DynamicMap in records.toVector() {
+                var task = record.getString("fname") .. " - " .. record.getString("lname")
+                var lbltask = LabelWidget.forText(context, task)
+                var hbox = HorizontalBoxWidget.forContext(context, 0, context.getHeightValue("0.5mm"))
+                hbox.addWidget(lbltask)
+                list.addWidget(AlignWidget.forWidget(context, hbox), 1.0)
+            }
         }
-        TextInputWidget userInput{
-            placeholder = "Username"
-        }
-        TextInputWidget passwordInput{
-            placeholder = "Password"
-        }
-        TextInputWidget re_passwordInput{
-            placeholder = "Re Enter Passsword"
-        }
-        TextButtonWidget addTaskButton{
-            text = "Register"
-        }
-		TextButtonWidget registerButton{
-			text = "Back to Login"
-			textColor = Color.instance("#87CEFA")
-			clickHandler = func {
-				var thisWidget final = this
-				var nav = NavigationWidget.findNavigationWidget(thisWidget)
-				nav.popWidget()
-				nav.pushWidget(new IDPSRegistration(context))
-			}
-		}
-	}
+    })
 }
 
 func getWidgetTitle as string:
-     return "Registration"
+    return "IDPS"
+    
