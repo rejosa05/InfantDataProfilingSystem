@@ -6,12 +6,12 @@ class is IDPSDatabase:
 
 const USER = "idps_user"
 
-model TableModelUser static
+model UserModel static
 {
     userId as int
-    userFname as string
-    userLname as string
-    userEmail as string
+    fname as string
+    lname as string
+    email as string
     username as string
     password as string
     re_password as string
@@ -22,21 +22,19 @@ model TableModelUser static
 func createTableUser as SQLTableInfo
 {
     var tbl = SQLTableInfo.forName(USER)
-
     tbl.addIntegerKeyColumn("userId")
-    tbl.addStringColumn("userFname")
-    tbl.addStringColumn("userLname")
-    tbl.addStringColumn("userEmail")
+    tbl.addStringColumn("fname")
+    tbl.addStringColumn("lname")
+    tbl.addStringColumn("email")
     tbl.addStringColumn("username")
     tbl.addStringColumn("password")
     tbl.addStringColumn("re_password")
     tbl.addLongColumn("createdAt")
     tbl.addLongColumn("updatedAt")
-
     return tbl
 }
 
-func createUsers(db as MySQLDatabase, usermodel as TableModelUser) as TableModelUser
+func createUsers(db as MySQLDatabase, usermodel as UserModel) as UserModel
 {
     assert usermodel
     usermodel.setCreatedAtValue(SystemClock.asUTCSeconds())
@@ -46,14 +44,14 @@ func createUsers(db as MySQLDatabase, usermodel as TableModelUser) as TableModel
 
 func getAllUser (db as MySQLDatabase) as DynamicMap
 {
-    var v = new vector<TableModelUser>
+    var v = new vector<UserModel>
     var it = assert db.querySync(db.prepareQueryAllStatementSync(USER)):
         return null
     while it {
         var o = it.next()
         if not o:
             break
-        var infant = TableModelUser.forJsonObject(o)
+        var infant = UserModel.forJsonObject(o)
         if not infant:
             continue
         v += infant
@@ -61,4 +59,23 @@ func getAllUser (db as MySQLDatabase) as DynamicMap
     var d = new DynamicMap()
     d.setObject("records", v)
     return d
+}
+
+func login(db as MySQLDatabase, loginConstraints as DynamicMap) as DynamicMap
+{
+    var v = new vector<UserModel>
+    var it = assert db.querySync(db.prepareSelectStatementSync(USER, loginConstraints)):
+        return null
+    while it{
+        var o = it.next()
+        if not o:
+            break
+        var row = UserModel.forJsonObject(o)
+        if not row:
+            continue
+        v += row
+    }
+    var data = new DynamicMap()
+    data.setObject("records", v)
+    return data
 }
