@@ -59,7 +59,7 @@ ui LayerWidget
             type = TextInputWidget.TYPE_PASSWORD
         }
         ButtonWidget registerButton{
-            text = "Register"
+            text = "Register Employeee"
             clickHandler = func{
                 var user = new ModelUser
                 user.setFname(fnameInput.getWidgetText())
@@ -69,14 +69,14 @@ ui LayerWidget
                 user.setPassword(passwordInput.getWidgetText())
                 user.setRe_password(re_passwordInput.getWidgetText())
                 IDPSApiClient.getInstance().registerUser(user.toDynamicMap(), func(res as DynamicMap){
-                    submitMessage.setWidgetText("Successfully Added")
+                    context.showErrorDialog("Register Successfully")
                 },func(error as Error){
-                    submitMessage.setWidgetText("Failed")
+                    context.showErrorDialog("Failed To Register")
                 })
                 var thisWidget final = this
                 var nav = NavigationWidget.findNavigationWidget(thisWidget)
                 nav.popWidget()
-                nav.pushWidget(new IDPSLogin(context))
+                nav.pushWidget(new IDPSDashboard(context))
             }
         }
         VerticalBoxWidget list{
@@ -90,7 +90,7 @@ ui LayerWidget
 				var thisWidget final = this
 				var nav = NavigationWidget.findNavigationWidget(thisWidget)
 				nav.popWidget()
-				nav.pushWidget(new IDPSLogin(context))
+				nav.pushWidget(new IDPSDashboard(context))
 			}
 		}
 	}
