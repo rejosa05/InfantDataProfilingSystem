@@ -5,7 +5,7 @@ class is TitledWidget #widget:
 
 model Login
 {
-    user as string
+    username as string
     password as string
 }
 
@@ -39,19 +39,25 @@ ui LayerWidget
 		ButtonWidget loginButton{
 			text = "Login"
 			clickHandler = func {
-				var thisWidget final = this
-				var nav = NavigationWidget.findNavigationWidget(thisWidget)
-				nav.pushWidget(new IDPSDashboard(context))
-			}
-		}
-		ButtonWidget registerButton{
-			text = "Registration"
-			textColor = Color.instance("#87CEFA")
-			clickHandler = func {
-				var thisWidget final = this
-				var nav = NavigationWidget.findNavigationWidget(thisWidget)
-				nav.popWidget()
-				nav.pushWidget(new IDPSRegistration(context))
+				var user = new Login
+				user.setUsername(userInput.getWidgetText())
+				user.setPassword(passwordInput.getWidgetText())
+				IDPSApiClient.getInstance().login(user.toDynamicMap(), func(resp as DynamicMap){
+					var data = assert resp.getDynamicMap("data")
+					var records = data.getDynamicVector("records")
+					if not records || records.getSize() < 1 {
+						context.showErrorDialog("Wrong Username or Password")
+					}
+					else{
+						var thisWidget final = this
+						var nav = NavigationWidget.findNavigationWidget(thisWidget)
+						nav.popWidget()
+						nav.pushWidget(new IDPSDashboard(context))
+					}
+				},func(error as Error){
+					context.showErrorDialog("Failed to connect to the database")
+				})
+				
 			}
 		}
 	}
