@@ -12,30 +12,30 @@ pvar db as MySQLDatabase
 func forContext(ctx as LoggingContext) static as this
 {
     var cstr = EnvironmentVariable.get("IDPS_DATABASE")
-    Log.debug(ctx, "Opening data connectoion:'" .. cstr .. "'")
-    db = MySQLDatabase.forConnectionStringSync(ctx,cstr)
+    Log.debug(ctx, "Opening database connection:'" .. cstr .. "'")
+    db = MySQLDatabase.forConnectionStringSync(ctx, cstr)
     if not db:
-        Error.throw("failedToConnectDatabase", cstr)
+        Error.throw("faildToConnectToDatabase", cstr)
     var v = new this()
 
     v.setDb(db)
-    return  v
+    return v
 }
 
-func updateTable(tbl as SQLTableInfo)
+func updateTable(table as SQLTableInfo)
 {
-    if not tbl:
+    if not table:
         Error.throw("nullTable", "updateTable")
     if not db:
         Error.throw("nullDB", "updateTable")
-    if not db.ensureTableExistsSync(tbl):
-        Error.throw("failedToUpdateTable", tbl.getName())
+    if not db.ensureTableExistsSync(table):
+        Error.throw("failedToUpdateTable", table.getName())
 }
 
 func updateTables
 {
-    updateTable(IDPSTable.createTableInfant())
-    updateTable(IDPSTable.createTableUser())
+    updateTable(IDPSUsertbl.createTableUser())
+    updateTable(IDPSInfanttbl.createTableInfant())
 }
 
 func close
