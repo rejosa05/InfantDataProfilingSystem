@@ -4,42 +4,42 @@ import jk.time
 
 class:
 
-const INFANT = "infant_tbl"
+const TABLENAME = "infant_tbl"
 
 model TableModelInfant static
 {
     intantId as int
-    infantFname as string
-    infantLname as string
-    infantMname as string
-    infantGender as string
-    infantCitizenship as string
-    infantFatherMaidenName as string
-    infantMotherMaidenName as string
-    infantDateofBirth as long
-    infantPlaceofBirth as string
-    infantWeight as string
-    infantHeight as string
+    fname as string
+    lname as string
+    mname as string
+    gender as string
+    citizenship as string
+    fathermn as string
+    mothermn as string
+    dateofbirth as string
+    placeofbirth as string
+    weight as string
+    height as string
     createdAt as long
     updatedAt as long
 }
 
 func createTableInfant as SQLTableInfo
 {
-    var tbl = SQLTableInfo.forName(INFANT)
+    var tbl = SQLTableInfo.forName(TABLENAME)
 
     tbl.addIntegerKeyColumn("infantId")
-    tbl.addStringColumn("infantFname")
-    tbl.addStringColumn("infantLname")
-    tbl.addStringColumn("infantMname")
-    tbl.addStringColumn("infantGender")
-    tbl.addStringColumn("infantCitizenship")
-    tbl.addStringColumn("infantFatherMaidenName")
-    tbl.addStringColumn("infantMotherMaidenName")
-    tbl.addLongColumn("infantBirthofDate")
-    tbl.addStringColumn("infantPlaceofBirth")
-    tbl.addStringColumn("infantWeight")
-    tbl.addStringColumn("infantHeight")
+    tbl.addStringColumn("fname")
+    tbl.addStringColumn("lname")
+    tbl.addStringColumn("mname")
+    tbl.addStringColumn("gender")
+    tbl.addStringColumn("citizenship")
+    tbl.addStringColumn("fathermn")
+    tbl.addStringColumn("mothermn")
+    tbl.addStringColumn("dateofbirth")
+    tbl.addStringColumn("placeofbirth")
+    tbl.addStringColumn("weight")
+    tbl.addStringColumn("height")
     tbl.addLongColumn("createdAt")
     tbl.addLongColumn("updatedAt")
 
@@ -50,14 +50,14 @@ func addInfants(db as MySQLDatabase, infant as TableModelInfant) as TableModelIn
 {
     assert infant
     infant.setCreatedAtValue(SystemClock.asUTCSeconds())
-    assert db.executeSync(db.prepareInsertStatementSync(INFANT, infant.toDynamicMap()))
+    assert db.executeSync(db.prepareInsertStatementSync(TABLENAME, infant.toDynamicMap()))
     return infant
 }
 
 func getAllInfant (db as MySQLDatabase) as DynamicMap
 {
     var v = new vector<TableModelInfant>
-    var it = assert db.querySync(db.prepareQueryAllStatementSync(INFANT)):
+    var it = assert db.querySync(db.prepareQueryAllStatementSync(TABLENAME)):
         return null
     while it {
         var o = it.next()
