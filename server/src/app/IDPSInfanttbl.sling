@@ -8,7 +8,7 @@ const TABLENAME = "infant_tbl"
 
 model TableModelInfant static
 {
-    intantId as int
+    infant as int
     fname as string
     lname as string
     mname as string
