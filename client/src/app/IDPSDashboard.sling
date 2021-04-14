@@ -1,42 +1,84 @@
 import jk.widget.common
+import jk.widget
+import jk.widget.datagrid
 
 class is TitledWidget #widget:
 
 ui LayerWidget
 {
-    VerticalScrollerWidget {
-        scrollBarDisabled = true
-        LayerWithBackgroundColorWidget container {
-            color = Color.white()
-            VerticalBoxWidget list {
-                margin = context.getHeightValue("5mm")
-                spacing = context.getHeightValue("5mm")
-            }
+	CanvasWidget {
+		color = Color.forString("#CCCCCC")
+	}
+	VerticalBoxWidget {
+		margin = context.getHeightValue("1mm")
+		spacing = context.getHeightValue("1mm")
+        LabelWidget submitMessage{
+            text = "All Employeees"
+            textAlign = LabelWidget.ALIGN_CENTER
         }
-    }    
+		DataGridWidget grid : 1.0 {
+		}
+		ButtonWidget addInfant {
+			text = "Add Infants"
+			clickHandler = func {
+				var thisWidget final = this
+                var nav = NavigationWidget.findNavigationWidget(thisWidget)
+                nav.popWidget()
+                nav.pushWidget(new IDPSAdd(context))
+			}
+		}
+        ButtonWidget addEmployee {
+			text = "Add Employeee"
+			clickHandler = func {
+                var thisWidget final = this
+                var nav = NavigationWidget.findNavigationWidget(thisWidget)
+                nav.popWidget()
+                nav.pushWidget(new IDPSRegistration(context))
+			}
+		}
+        ButtonWidget viewEmployee {
+			text = "List of Employeee"
+			clickHandler = func {
+                var thisWidget final = this
+                var nav = NavigationWidget.findNavigationWidget(thisWidget)
+                nav.popWidget()
+                nav.pushWidget(new IDPSUserd(context))
+			}
+		}
+	}
 }
 
 func initializeWidget override
 {
-    base.initializeWidget()
-    IDPSApiClient.getInstance().getUser(func(response as DynamicMap) {
+	base.initializeWidget()
+	grid.addColumn("Infant Id", "id", 0.2)
+	grid.addColumn("Last Name", "name", 1.0)
+    grid.addColumn("First Name", "lname", 1.0)
+    grid.addColumn("Middle Name", "mname", 1.0)
+    grid.addColumn("Gender", "gender", 1.0)
+    grid.addColumn("Birthday", "birthday", 1.0)
+    grid.addColumn("Place of Birth", "place of birth", 1.0)
+    grid.addColumn("Citizenship", "citizenship", 1.0)
+    grid.addColumn("Parents Name", "parents name", 1.0)
+    grid.addColumn("Weight", "weight", 1.0)
+    grid.addColumn("Height", "height", 1.0)
+    
+
+	grid.addWidgetHeaderRow()
+    IDPSApiClient.getInstance().getInfant(func(response as DynamicMap) {
         var data = assert response.getDynamicMap("data")
         var records = data.getDynamicVector("records")
         if not records ||  records.getSize() < 1 {
-            list.addWidget(AlignWidget.forWidget(context, LabelWidget.forText(context, "No record")), 1.0)
+             grid.addRow([ "NO data"])
         }
         else {
             foreach record as DynamicMap in records.toVector() {
-                var task = record.getString("fname") .. " - " .. record.getString("lname")
-                var lbltask = LabelWidget.forText(context, task)
-                var hbox = HorizontalBoxWidget.forContext(context, 0, context.getHeightValue("0.5mm"))
-                hbox.addWidget(lbltask)
-                list.addWidget(AlignWidget.forWidget(context, hbox), 1.0)
+                var familyname = record.getString("fathernm") .. " , " .. record.getString("mothernm")
+                grid.addRow([record.getString("infantId"), record.getString("lname"), record.getString("fname"), record.getString("mname"), record.getString("gender"), record.getString("dateofbirth"), record.getString("placeofbirth"), record.getString("citizenship"), familyname, record.getString("weight"), record.getString("height") ])
             }
         }
     })
 }
 
 func getWidgetTitle as string:
-    return "IDPS"
-    
+    return VALUE "title"
