@@ -18,6 +18,15 @@ ui LayerWidget
         }
 		DataGridWidget grid : 1.0 {
 		}
+        ButtonWidget viewInfants{
+			text = "List of Infants"
+			clickHandler = func {
+                var thisWidget final = this
+                var nav = NavigationWidget.findNavigationWidget(thisWidget)
+                nav.popWidget()
+                nav.pushWidget(new IDPSDashboard(context))
+			}
+		}
 		ButtonWidget addInfant {
 			text = "Add Infants"
 			clickHandler = func {
@@ -58,7 +67,7 @@ func initializeWidget override
         else {
             foreach record as DynamicMap in records.toVector() {
                 var name = record.getString("lname") .. "," .. record.getString("fname")
-                grid.addRow([record.getString("userid"), name , record.getString("email"), record.getString("username"), record.getString("password"), record.getString("re_password")])
+                grid.addRow([record.getString("userId"), name , record.getString("email"), record.getString("username"), record.getString("password"), record.getString("re_password")])
             }
         }
     })
