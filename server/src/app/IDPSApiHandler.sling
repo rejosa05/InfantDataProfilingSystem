@@ -1,7 +1,93 @@
-import jk.http.server
+import jk.http.client
 import jk.http.worker
 
 class is HTTPRPCRouter #webapi2:
+
+model RequestInfant
+{
+    fname as string
+    lname as string
+    mname as string
+    gender as string
+    citizenship as string
+    fathermn as string
+    mothermn as string
+    dateofbirth as string
+    placeofbirth as string
+    weight as string
+    height as string
+}
+
+model RequestUser
+{
+    fname as string
+    lname as string
+    email as string
+    username as string
+    password as string
+    re_password as string
+}
+
+GET "/getinfant"
+{
+    var infant = assert IDPSInfanttbl.getAllInfant(getDatabase().getDb())
+    sendOk infant
+}
+
+GET "/getuser"
+{
+    var user = assert IDPSUsertbl.getAllUser(getDatabase().getDb())
+    sendOk user
+}
+
+POST "/insertUser"
+{
+    var reqData = assert RequestUser.forJsonString(req.getBodyString()):
+        sendError "invalidRequest"
+    var u = new IDPSUsertbl.UserModel
+    u.setFname(reqData.getFname())
+    u.setLname(reqData.getLname())
+    u.setEmail(reqData.getEmail())
+    u.setUsername(reqData.getUsername())
+    u.setPassword(reqData.getPassword())
+    u.setRe_password(reqData.getRe_password())
+    var account = assert IDPSUsertbl.createUsers(getDatabase().getDb(), u):
+        sendError "failedToSave"
+    sendOk account
+}
+
+POST "/insertInfant"
+{
+    var reqData = assert RequestInfant.forJsonString(req.getBodyString()):
+        sendError "invalidRequest"
+    var infnt = new IDPSInfanttbl.TableModelInfant
+    infnt.setFname(reqData.getFname())
+    infnt.setLname(reqData.getLname())
+    infnt.setMname(reqData.getMname())
+    infnt.setGender(reqData.getGender())
+    infnt.setCitizenship(reqData.getCitizenship())
+    infnt.setFathermn(reqData.getFathermn())
+    infnt.setMothermn(reqData.getMothermn())
+    infnt.setDateofbirth(reqData.getDateofbirth())
+    infnt.setPlaceofbirth(reqData.getPlaceofbirth())
+    infnt.setWeight(reqData.getWeight())
+    infnt.setHeight(reqData.getHeight())
+    var infant = assert IDPSInfanttbl.addInfants(getDatabase().getDb(), infnt):
+        sendError "failedToSave"
+    sendOk infant
+}
+
+POST "/login"
+{
+    var requestData = assert IDPSUsertbl.UserModel.forJsonString(req.getBodyString()):
+        sendError "invalidRequest"
+    var info = new IDPSUsertbl.UserModel
+    info.setUsername(requestData.getUsername())
+    info.setPassword(requestData.getPassword())
+    var login = assert IDPSUsertbl.login(getDatabase().getDb(), info.toDynamicMap()):
+        sendError "loginFailed"
+    sendOk login
+}
 
 var db as IDPSDatabase
 var cor = IDPSConfig.getCorsUtil()
@@ -17,86 +103,3 @@ func getDatabase as IDPSDatabase
 
 func postProcess(req as HTTPWorkerRequest, resp as HTTPWorkerResponse) override:
     cor.handleWorkerRequest(req, resp)
-
-
-model RequestInfant
-{
-    infantFname as string
-    infantLname as string
-    infantMname as string
-    infantGender as string
-    infantCitizenship as string
-    infantFatherMaidenName as string
-    infantMotherMaidenName as string
-    infantDateofBirth as long
-    infantPlaceofBirth as string
-    infantWeight as string
-    infantHeight as string
-}
-
-model RequestUser
-{
-    userFname as string
-    userLname as string
-    userEmail as string
-    username as string
-    password as string
-    re_password as string
-}
-
-GET "/getinfant"
-{
-    var infant = assert IDPSTable.getAllInfant(getDatabase().getDb())
-    sendOk infant
-}
-
-GET "/getuser"
-{
-    var user = assert IDPSTable.getAllUser(getDatabase().getDb())
-    sendOk user
-}
-
-POST "/insertuser"
-{
-    var reqData = assert RequestUser.forJsonString(req.getBodyString()):
-        sendError "invalidRequest"
-    var u = new IDPSTable.TableModelUser
-    u.setUserFname(reqData.getUserFname())
-    u.setUserLname(reqData.getUserLname())
-    u.setUserEmail(reqData.getUserEmail())
-    u.setUsername(reqData.getUsername())
-    u.setPassword(reqData.getPassword())
-    u.setRe_password(reqData.getRe_password())
-    assert IDPSTable.createUsers(getDatabase().getDb(), u):
-        sendError "failedToSave"
-    sendOk
-}
-
-POST "/insertinfant"
-{
-    var reqData = assert RequestInfant.forJsonString(req.getBodyString()):
-        sendError "invalidRequest"
-    var infnt = new IDPSTable.TableModelInfant()
-    infnt.setInfantFname(reqData.getInfantFname())
-    infnt.setInfantLname(reqData.getInfantLname())
-    infnt.setInfantMname(reqData.getInfantMname())
-    infnt.setInfantGender(reqData.getInfantGender())
-    infnt.setInfantCitizenship(reqData.getInfantCitizenship())
-    infnt.setInfantFatherMaidenName(reqData.getInfantFatherMaidenName())
-    infnt.setInfantMotherMaidenName(reqData.getInfantMotherMaidenName())
-    infnt.setInfantDateofBirth(reqData.getInfantDateofBirth())
-    infnt.setInfantPlaceofBirth(reqData.getInfantPlaceofBirth())
-    infnt.setInfantWeight(reqData.getInfantWeight())
-    infnt.setInfantHeight(reqData.getInfantHeight())
-    assert IDPSTable.createInfants(getDatabase().getDb(), infnt):
-        sendError "failedToSave"
-    sendOk
-}
-
-PUT "/task/:id"
-{
-}
-
-DELETE "/task/:id"
-{
-}
