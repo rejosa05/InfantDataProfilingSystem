@@ -3,15 +3,19 @@ import jk.widget
 
 class is TitledWidget #widget:
 
-model Infant
+model InfantModel
 {
-    id as string
     fname as string
     lname as string
-    email as string
-    user as string
-    password as string
-    re_password as string
+    mname as string
+    gender as string
+    citizenship as string
+    fathermn as string
+    mothermn as string
+    dateofbirth as string
+    placeofbirth as string
+    weight as string
+    height as string
 }
 
 ui LayerWidget
@@ -32,35 +36,77 @@ ui LayerWidget
 				}
 			}
 		}
-        TextInputWidget lnameInput{
+        TextInputWidget fname{
             placeholder = "Last Name"
         }
-        TextInputWidget fnameInput{
+        TextInputWidget lname{
             placeholder = "First Name"
         }
-        TextInputWidget emailInput{
-            placeholder = "Email@email.com"
+        TextInputWidget mname{
+            placeholder = "Middle Name"
         }
-        TextInputWidget userInput{
-            placeholder = "Username"
+		TextInputWidget gender{
+            placeholder = "Gender"
         }
-        TextInputWidget passwordInput{
-            placeholder = "Password"
+		TextInputWidget citizenship{
+            placeholder = "Citizenship"
         }
-        TextInputWidget re_passwordInput{
-            placeholder = "Re Enter Passsword"
+		TextInputWidget fathern{
+            placeholder = "Fathers Maiden Name"
         }
-        TextButtonWidget addTaskButton{
-            text = "Register"
+		TextInputWidget mothern{
+            placeholder = "Mothers Maiden Name"
         }
-		TextButtonWidget registerButton{
-			text = "Back to Login"
+		TextInputWidget dateofbirth{
+			placeholder = "MM-DD-YY"
+        }
+		TextInputWidget placeofbirth{
+			type = TextInputWidget.TYPE_STREET_ADDRESS
+            placeholder = "Place of Birth"
+        }
+		TextInputWidget height{
+			type = TextInputWidget.TYPE_FLOAT
+            placeholder = "cm"
+        }
+		TextInputWidget weight{
+			type = TextInputWidget.TYPE_FLOAT
+            placeholder = "kg"
+        }
+        ButtonWidget addInfant{
+            text = "Register Infant"
+            textColor = Color.instance("#000000")
+            clickHandler = func {
+                var inf = new InfantModel
+                inf.setFname(fname.getWidgetText())
+                inf.setLname(lname.getWidgetText())
+                inf.setMname(mname.getWidgetText())
+                inf.setGender(gender.getWidgetText())
+                inf.setCitizenship(citizenship.getWidgetText())
+                inf.setFathermn(fathern.getWidgetText())
+                inf.setMothermn(mothern.getWidgetText())
+                inf.setDateofbirth(dateofbirth.getWidgetText())
+                inf.setPlaceofbirth(placeofbirth.getWidgetText())
+                inf.setWeight(weight.getWidgetText())
+                inf.setHeight(height.getWidgetText())
+                IDPSApiClient.getInstance().addInfant(inf.toDynamicMap(), func(res as DynamicMap){
+                    context.showErrorDialog("Infant Register Successfully")
+                }, func(error as Error){
+                    context.showErrorDialog("Failed To Register")
+                })
+                var thisWidget final = this
+                var nav = NavigationWidget.findNavigationWidget(thisWidget)
+                nav.popWidget()
+                nav.pushWidget(new IDPSDashboard(context))
+            }
+        }
+		TextButtonWidget backtodashboard{
+			text = "Back to Dashboard"
 			textColor = Color.instance("#87CEFA")
 			clickHandler = func {
-				var thisWidget final = this
+                var thisWidget final = this
 				var nav = NavigationWidget.findNavigationWidget(thisWidget)
 				nav.popWidget()
-				nav.pushWidget(new IDPSRegistration(context))
+				nav.pushWidget(new IDPSDashboard(context))
 			}
 		}
 	}
