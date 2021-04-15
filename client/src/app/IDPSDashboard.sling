@@ -13,10 +13,19 @@ ui LayerWidget
 		margin = context.getHeightValue("1mm")
 		spacing = context.getHeightValue("1mm")
         LabelWidget submitMessage{
-            text = "All Employeees"
+            text = "All Infants"
             textAlign = LabelWidget.ALIGN_CENTER
         }
 		DataGridWidget grid : 1.0 {
+		}
+	ButtonWidget viewEmployee {
+			text = "List of Employeee"
+			clickHandler = func {
+                var thisWidget final = this
+                var nav = NavigationWidget.findNavigationWidget(thisWidget)
+                nav.popWidget()
+                nav.pushWidget(new IDPSUserd(context))
+			}
 		}
 		ButtonWidget addInfant {
 			text = "Add Infants"
@@ -34,15 +43,6 @@ ui LayerWidget
                 var nav = NavigationWidget.findNavigationWidget(thisWidget)
                 nav.popWidget()
                 nav.pushWidget(new IDPSRegistration(context))
-			}
-		}
-        ButtonWidget viewEmployee {
-			text = "List of Employeee"
-			clickHandler = func {
-                var thisWidget final = this
-                var nav = NavigationWidget.findNavigationWidget(thisWidget)
-                nav.popWidget()
-                nav.pushWidget(new IDPSUserd(context))
 			}
 		}
 	}
