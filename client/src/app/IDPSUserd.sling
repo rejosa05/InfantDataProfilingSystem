@@ -18,7 +18,7 @@ ui LayerWidget
         }
 		DataGridWidget grid : 1.0 {
 		}
-        ButtonWidget viewInfants{
+        ButtonWidget viewInfants {
 			text = "List of Infants"
 			clickHandler = func {
                 var thisWidget final = this
@@ -51,13 +51,18 @@ ui LayerWidget
 func initializeWidget override
 {
 	base.initializeWidget()
-	grid.addColumn("User Id", "id", 0.2)
+	grid.addColumn("Id", "id", 0.2)
 	grid.addColumn("Name", "name", 1.0)
     grid.addColumn("Username", "username", 1.0)
     grid.addColumn("Password", "password", 1.0)
     grid.addColumn("Re Password", "re_password", 1.0)
 
 	grid.addWidgetHeaderRow()
+    loadUser()
+}
+
+func loadUser
+{
     IDPSApiClient.getInstance().getUser(func(response as DynamicMap) {
         var data = assert response.getDynamicMap("data")
         var records = data.getDynamicVector("records")
@@ -66,12 +71,61 @@ func initializeWidget override
         }
         else {
             foreach record as DynamicMap in records.toVector() {
-                var name = record.getString("lname") .. "," .. record.getString("fname")
-                grid.addRow([record.getString("userId"), name , record.getString("email"), record.getString("username"), record.getString("password"), record.getString("re_password")])
             }
         }
     })
 }
 
+func addGrid(g as DataGridWidget, record as DynamicMap)
+{
+    var popIn = VerticalBoxWidget.forContext(context)
+    var backColor = new LayerWithBackgroundColorWidget(context)
+    var pop =  PopupWidget.forContentWidget(context, backColor)
+    var popMes = HorizontalBoxWidget.forContext(context)
+    var popButs = HorizontalBoxWidget.forContext(context)
+    var editBtn = TextButtonWidget.forText(context, "Edit")
+    var deleteBtn = TextButtonWidget.forText(context, "Delete")
+    var cancelBtn = TextButtonWidget.forText(context, "Cancel")
+
+    backColor.setWidgetColor(Color.white())
+    backColor.addWidget(popIn)
+    Widget.setLayoutSize(backColor,context.getWidthValue("200mm"),context.getHeightValue("120mm"))
+    
+    popIn.setWidgetMargin(context.getHeightValue("5mm"))
+    pop.setWidgetModal(true)
+  
+    editBtn.setWidgetClickHandler(func{
+        pop.hidePopup()
+        var thisWidget final = this
+        var nav = NavigationWidget.findNavigationWidget(thisWidget)
+        nav.pushWidget(new IDPSUserEdit(context).setInfantDetails(record))
+    })
+    deleteBtn.setWidgetClickHandler(func{
+        context.showConfirmDialog("DELETING .....", "Do you want to delete this Data?", func{
+            IDPSApiClient.getInstance().deleteUser(record.getString("userId"),func(resp as DynamicMap){
+                context.showMessageDialog("Data has been Deleted",func{
+                    pop.hidePopup()
+                    loadUser()
+                })
+            })
+        })
+    })
+
+    cancelBtn.setWidgetClickHandler(func{
+        pop.hidePopup()
+    })
+    popMes.addWidget(LabelWidget.forText(context, "What do you want to do with this record?"))
+    popButs.addWidget(editBtn,1.0)
+    popButs.addWidget(deleteBtn,1.0)
+    popButs.addWidget(cancelBtn,1.0)
+
+    popIn.addWidget(popMes, 1.0)
+    popIn.addWidget(popButs, 1.0)
+    var name = record.getString("lname") .. " , " .. record.getString("fname")
+    g.addRow([record.getString("userId"), name , record.getString("email"), record.getString("username"), record.getString("password"), record.getString("re_password")], func{
+        pop.showPopup(backColor)
+    })
+}
+
 func getWidgetTitle as string:
-    return VALUE "title"
+    return VALUE "eqela"
