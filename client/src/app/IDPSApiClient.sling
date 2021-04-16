@@ -47,8 +47,8 @@ func addInfant(data as DynamicMap, callback as function<void, DynamicMap>, error
 func updateTask(id as string, data as DynamicMap, callback as function<void, DynamicMap>, errorCallback as function<void,Error>):
     doPut("/task" .. id, data, callback, errorCallback)
 
-func deleteTask(id as string, callback as function<void, DynamicMap>, errorCallback as function<void, Error>):
-    doDelete("/task" .. id, callback, errorCallback)
+func deleteInfant(id as string, callback as function<void, DynamicMap>, errorCallback as function<void, Error>):
+    doDelete("/deleteInfant/" .. id, callback, errorCallback)
 
 func getUser(callback as function<void,DynamicMap>, errorCallback as function<void, Error> = null):
     doGet("/getuser", callback, errorCallback)
