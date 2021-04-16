@@ -71,6 +71,7 @@ func loadUser
         }
         else {
             foreach record as DynamicMap in records.toVector() {
+	    	addGrid(grid, record)
             }
         }
     })
