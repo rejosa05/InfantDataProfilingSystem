@@ -1,0 +1,104 @@
+import jk.widget.common
+import jk.widget
+
+class is TitledWidget #widget:
+
+pvar userDetails as DynamicMap
+pvar userId as int
+
+model ModelUser
+{
+    fname as string
+    lname as string
+    email as string
+    username as string
+    password as string
+    re_password as string
+    createdAt as long
+    updatedAt as long
+}
+
+ui LayerWidget
+{
+    VerticalBoxWidget {
+		margin = context.getHeightValue("40mm")
+		spacing = context.getHeightValue("0.5mm")
+		LayerWidget {
+			CanvasWidget {
+				color = Color.forString("black")
+			}
+			LayerWidget {
+				margin = context.getHeightValue("5mm")
+                
+				LabelWidget myLabel {
+					text = "Edit User Information"
+					textColor = Color.forString("white")
+					textAlign = LabelWidget.ALIGN_CENTER
+				}
+			}
+		}
+        TextInputWidget fnameInput{
+            placeholder = "First Name"
+        }
+        TextInputWidget lnameInput{
+            placeholder = "Last Name"
+        }
+        TextInputWidget emailInput{
+            placeholder = "Email@email.com"
+            type = TextInputWidget.TYPE_EMAIL_ADDRESS
+        }
+        TextInputWidget userInput{
+            placeholder = "Username"
+        }
+        TextInputWidget passwordInput{
+            placeholder = "Password"
+            type = TextInputWidget.TYPE_PASSWORD
+        }
+        TextInputWidget re_passwordInput{
+            placeholder = "Re Enter Passsword"
+            type = TextInputWidget.TYPE_PASSWORD
+        }
+        ButtonWidget registerButton{
+            text = "Update"
+            clickHandler = func{
+                var user = new ModelUser
+                user.setFname(fnameInput.getWidgetText())
+                user.setLname(lnameInput.getWidgetText())
+                user.setEmail(emailInput.getWidgetText())
+                user.setUsername(userInput.getWidgetText())
+                user.setPassword(passwordInput.getWidgetText())
+                user.setRe_password(re_passwordInput.getWidgetText())
+                IDPSApiClient.getInstance().editUser(String.forInteger(userId),user.toDynamicMap(), func(res as DynamicMap){
+                    context.showErrorDialog("Update Successfully")
+					var thisWidget final = this
+					var nav = NavigationWidget.findNavigationWidget(thisWidget)
+                },func(error as Error){
+                    context.showErrorDialog("Failed To Update")
+                })
+            }
+        }
+        ButtonWidget backtodashboard{
+			text = "Cancel"
+			textColor = Color.instance("#87CEFA")
+			clickHandler = func {
+				var thisWidget final = this
+				var nav = NavigationWidget.findNavigationWidget(thisWidget)
+				nav.popWidget()
+				nav.pushWidget(new IDPSDashboard(context))
+			}
+		}
+	}
+}
+
+func initializeWidget override
+{
+    base.initializeWidget()
+    userId = userDetails.getInteger("userId")
+    fname = userDetails.getInteger("fname")
+    lname = userDetails.getInteger("lname")
+    email = userDetails.getInteger("fname")
+    fname = userDetails.getInteger("fname")
+    fname = userDetails.getInteger("fname")
+}
+func getWidgetTitle as string:
+    return "Eqela"
