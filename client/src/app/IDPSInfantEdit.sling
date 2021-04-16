@@ -1,0 +1,133 @@
+import jk.widget.common
+import jk.widget
+
+class is TitledWidget #widget:
+
+pvar infantDetails as DynamicMap
+pvar infantId as int
+
+model InfantModel
+{
+    fname as string
+    lname as string
+    mname as string
+    gender as string
+    citizenship as string
+    fathermn as string
+    mothermn as string
+    dateofbirth as string
+    placeofbirth as string
+    weight as string
+    height as string
+}
+
+ui LayerWidget
+{
+    VerticalBoxWidget {
+		margin = context.getHeightValue("40mm")
+		spacing = context.getHeightValue("0.5mm")
+		LayerWidget {
+			CanvasWidget {
+				color = Color.forString("black")
+			}
+			LayerWidget {
+				margin = context.getHeightValue("5mm")
+				LabelWidget myLabel {
+					text = "INFANT REGISTRATION"
+					textColor = Color.forString("white")
+					textAlign = LabelWidget.ALIGN_CENTER
+				}
+			}
+		}
+        TextInputWidget fname{
+            placeholder = "Last Name"
+        }
+        TextInputWidget lname{
+            placeholder = "First Name"
+        }
+        TextInputWidget mname{
+            placeholder = "Middle Name"
+        }
+		TextInputWidget gender{
+            placeholder = "Gender"
+        }
+		TextInputWidget citizenship{
+            placeholder = "Citizenship"
+        }
+		TextInputWidget fathern{
+            placeholder = "Fathers Maiden Name"
+        }
+		TextInputWidget mothern{
+            placeholder = "Mothers Maiden Name"
+        }
+		TextInputWidget dateofbirth{
+			placeholder = "MM-DD-YY"
+        }
+		TextInputWidget placeofbirth{
+			type = TextInputWidget.TYPE_STREET_ADDRESS
+            placeholder = "Place of Birth"
+        }
+		TextInputWidget height{
+			type = TextInputWidget.TYPE_FLOAT
+            placeholder = "cm"
+        }
+		TextInputWidget weight{
+			type = TextInputWidget.TYPE_FLOAT
+            placeholder = "kg"
+        }
+        ButtonWidget addInfant{
+            text = "Register Infant"
+            textColor = Color.instance("#000000")
+            clickHandler = func {
+				var inf = new InfantModel
+                inf.setFname(fname.getWidgetText())
+                inf.setLname(lname.getWidgetText())
+                inf.setMname(mname.getWidgetText())
+                inf.setGender(gender.getWidgetText())
+                inf.setCitizenship(citizenship.getWidgetText())
+                inf.setFathermn(fathern.getWidgetText())
+                inf.setMothermn(mothern.getWidgetText())
+                inf.setDateofbirth(dateofbirth.getWidgetText())
+                inf.setPlaceofbirth(placeofbirth.getWidgetText())
+                inf.setWeight(weight.getWidgetText())
+                inf.setHeight(height.getWidgetText())
+                IDPSApiClient.getInstance().editInfant(String.forInteger(infantId), accInfo.toDynamicMap(), func(resp as DynamicMap){
+					context.showErrorDialog("Update Successfully")
+					var thisWidget final = this
+					var nav = NavigationWidget.findNavigationWidget(thisWidget)
+					nav.popWidget()
+                }, func(error as Error){
+                    context.showErrorDialog("Failed To Update")
+                })
+            }
+        }
+		TextButtonWidget backtodashboard{
+			text = "Cancel"
+			textColor = Color.instance("#87CEFA")
+			clickHandler = func {
+                var thisWidget final = this
+				NavigationWidget.popFromContainer(thisWidget)
+			}
+		}
+	}
+}
+
+func initializeWidget override
+{
+    base.initializeWidget()
+    infantId = infantDetails.getInteger("infantId")
+    fname = infantDetails.getString("fname")
+	lname = infantDetails.getString("lname")
+	mname = infantDetails.getString("mname")
+	gender = infantDetails.getString("gender")
+	citizenship = infantDetails.getString("citizenship")
+	fathern = infantDetails.getString("fathern")
+	mothern = infantDetails.getString("mothern")
+	dateofbirth = infantDetails.getString("dateofbirth")
+	placeofbirth = infantDetails.getString("placeofbirth")
+	weight = infantDetails.getString("weight")
+	height = infantDetails.getString("height")
+}
+
+func getWidgetTitle as string:
+    return "Eqela"
