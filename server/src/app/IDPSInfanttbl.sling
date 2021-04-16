@@ -4,11 +4,11 @@ import jk.time
 
 class:
 
-const TABLENAME = "infant_tbl"
+const INFANT = "infant_tbl"
 
 model TableModelInfant static
 {
-    infant as int
+    infantId as int
     fname as string
     lname as string
     mname as string
@@ -26,7 +26,7 @@ model TableModelInfant static
 
 func createTableInfant as SQLTableInfo
 {
-    var tbl = SQLTableInfo.forName(TABLENAME)
+    var tbl = SQLTableInfo.forName(INFANT)
 
     tbl.addIntegerKeyColumn("infantId")
     tbl.addStringColumn("fname")
@@ -50,14 +50,14 @@ func addInfants(db as MySQLDatabase, infant as TableModelInfant) as TableModelIn
 {
     assert infant
     infant.setCreatedAtValue(SystemClock.asUTCSeconds())
-    assert db.executeSync(db.prepareInsertStatementSync(TABLENAME, infant.toDynamicMap()))
+    assert db.executeSync(db.prepareInsertStatementSync(INFANT, infant.toDynamicMap()))
     return infant
 }
 
 func getAllInfant (db as MySQLDatabase) as DynamicMap
 {
     var v = new vector<TableModelInfant>
-    var it = assert db.querySync(db.prepareQueryAllStatementSync(TABLENAME)):
+    var it = assert db.querySync(db.prepareQueryAllStatementSync(INFANT)):
         return null
     while it {
         var o = it.next()
@@ -71,4 +71,20 @@ func getAllInfant (db as MySQLDatabase) as DynamicMap
     var d = new DynamicMap()
     d.setObject("records", v)
     return d
+}
+
+func deleteInfant (db as MySQLDatabase, infntId as string) as bool
+{
+    var infnTbl = new TableModelInfant()
+    infnTbl.setInfantIdValue(String.toInteger(infntId))
+    return db.executeSync(db.prepareDeleteStatementSync(INFANT, infnTbl.toDynamicMap()))
+}
+
+func editInfant (db as MySQLDatabase, infntId as string, dataTbl as TableModelInfant) as bool
+{
+    assert dataTbl
+    dataTbl.setUpdatedAtValue(SystemClock.asUTCSeconds())
+    var infnTbl = new TableModelInfant()
+    infnTbl.setInfantIdValue(String.toInteger(infntId))
+    return db.executeSync(db.prepareUpdateStatementSync(INFANT, infnTbl.toDynamicMap(), dataTbl.toDynamicMap()))
 }
