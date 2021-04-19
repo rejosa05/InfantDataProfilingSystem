@@ -15,7 +15,7 @@ func create(context as GuiApplicationContext, parentWidget as Widget = null) sta
 {
     assert context
     instance = new this()
-    instance.setApiUrl("http://ec2-13-228-25-234.ap-southeast-1.compute.amazonaws.com:30221")
+    instance.setApiUrl("http://ec2-54-251-29-250.ap-southeast-1.compute.amazonaws.com:30221")
     instance.setContext(context)
     if parentWidget:
         instance.setParentWidget(parentWidget)
@@ -44,17 +44,29 @@ func registerUser(data as DynamicMap, callback as function<void, DynamicMap>, er
 func addInfant(data as DynamicMap, callback as function<void, DynamicMap>, errorCallback as function<void, Error>):
     doPost("/insertInfant/", data, callback, errorCallback)
 
-func updateTask(id as string, data as DynamicMap, callback as function<void, DynamicMap>, errorCallback as function<void,Error>):
-    doPut("/task" .. id, data, callback, errorCallback)
+func createLog(data as DynamicMap, callback as function<void, DynamicMap>, errorCallback as function<void, Error>):
+    doPost("/log", data, callback, errorCallback)
 
 func deleteInfant(id as string, callback as function<void, DynamicMap>, errorCallback as function<void, Error>):
     doDelete("/deleteInfant/" .. id, callback, errorCallback)
+
+func deleteUser(id as string, callback as function<void, DynamicMap>, errorCallback as function<void, Error>):
+    doDelete("/deleteUser/" .. id, callback, errorCallback)
+
+func editUser(id as string, data as DynamicMap, callback as function<void, DynamicMap>, errorCallback as function<void, Error>):
+    doPut("/editUser/"..id, data, callback, errorCallback)
+
+func editInfant(id as string, data as DynamicMap, callback as function<void, DynamicMap>, errorCallback as function<void, Error>):
+    doPut("/editInfant/"..id, data, callback, errorCallback)
 
 func getUser(callback as function<void,DynamicMap>, errorCallback as function<void, Error> = null):
     doGet("/getuser", callback, errorCallback)
 
 func getInfant(callback as function<void,DynamicMap>, errorCallback as function<void, Error> = null):
     doGet("/getinfant", callback, errorCallback)
+
+func getLog(callback as function<void,DynamicMap>, errorCallback as function<void, Error> = null):
+    doGet("/getinfant", callback, errorCallback) 
 
 func login(data as DynamicMap, callback as function<void, DynamicMap>, errorCallback as function<void, Error>):
     doPost("/login", data, callback, errorCallback)
