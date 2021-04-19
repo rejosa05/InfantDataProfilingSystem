@@ -45,6 +45,15 @@ ui LayerWidget
                 nav.pushWidget(new IDPSRegistration(context))
 			}
 		}
+        ButtonWidget logOut {
+			text = "Log Out"
+			clickHandler = func {
+                var thisWidget final = this
+                var nav = NavigationWidget.findNavigationWidget(thisWidget)
+                nav.popWidget()
+                nav.pushWidget(new IDPSLogin(context))
+			}
+		}
 	}
 }
 
@@ -53,6 +62,7 @@ func initializeWidget override
 	base.initializeWidget()
 	grid.addColumn("Id", "id", 0.2)
 	grid.addColumn("Name", "name", 1.0)
+    grid.addColumn("Email", "email", 1.0)
     grid.addColumn("Username", "username", 1.0)
     grid.addColumn("Password", "password", 1.0)
     grid.addColumn("Re Password", "re_password", 1.0)
@@ -71,7 +81,7 @@ func loadUser
         }
         else {
             foreach record as DynamicMap in records.toVector() {
-	    	addGrid(grid, record)
+                addGrid(grid, record)
             }
         }
     })
@@ -99,16 +109,23 @@ func addGrid(g as DataGridWidget, record as DynamicMap)
         pop.hidePopup()
         var thisWidget final = this
         var nav = NavigationWidget.findNavigationWidget(thisWidget)
-        nav.pushWidget(new IDPSUserEdit(context).setInfantDetails(record))
+        nav.pushWidget(new IDPSUserEdit(context).setUserDetails(record))
     })
+
     deleteBtn.setWidgetClickHandler(func{
-        context.showConfirmDialog("DELETING .....", "Do you want to delete this Data?", func{
+        context.showConfirmDialog("DELETING .....", "Do you want to delete this Data?",func{
             IDPSApiClient.getInstance().deleteUser(record.getString("userId"),func(resp as DynamicMap){
-                context.showMessageDialog("Data has been Deleted",func{
+                context.showMessageDialog("Success","Data has been Deleted",func{
                     pop.hidePopup()
                     loadUser()
                 })
+            },func(e as Error){
+                context.showErrorDialog("Failed to delete!",func{
+                    pop.hidePopup()
+                })
             })
+        },func{
+            pop.hidePopup()
         })
     })
 
@@ -129,4 +146,4 @@ func addGrid(g as DataGridWidget, record as DynamicMap)
 }
 
 func getWidgetTitle as string:
-    return VALUE "eqela"
+    return VALUE "title"
