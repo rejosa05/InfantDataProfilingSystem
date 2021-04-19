@@ -39,10 +39,10 @@ ui LayerWidget
 				}
 			}
 		}
-        TextInputWidget fname{
+        TextInputWidget lname{
             placeholder = "Last Name"
         }
-        TextInputWidget lname{
+        TextInputWidget fname{
             placeholder = "First Name"
         }
         TextInputWidget mname{
@@ -76,7 +76,7 @@ ui LayerWidget
             placeholder = "kg"
         }
         ButtonWidget addInfant{
-            text = "Register Infant"
+            text = "Update Infant"
             textColor = Color.instance("#000000")
             clickHandler = func {
 				var inf = new InfantModel
@@ -91,7 +91,7 @@ ui LayerWidget
                 inf.setPlaceofbirth(placeofbirth.getWidgetText())
                 inf.setWeight(weight.getWidgetText())
                 inf.setHeight(height.getWidgetText())
-                IDPSApiClient.getInstance().editInfant(String.forInteger(infantId), accInfo.toDynamicMap(), func(resp as DynamicMap){
+                IDPSApiClient.getInstance().editInfant(String.forInteger(infantId), inf.toDynamicMap(), func(resp as DynamicMap){
 					context.showErrorDialog("Update Successfully")
 					var thisWidget final = this
 					var nav = NavigationWidget.findNavigationWidget(thisWidget)
@@ -116,17 +116,17 @@ func initializeWidget override
 {
     base.initializeWidget()
     infantId = infantDetails.getInteger("infantId")
-    fname = infantDetails.getString("fname")
-	lname = infantDetails.getString("lname")
-	mname = infantDetails.getString("mname")
-	gender = infantDetails.getString("gender")
-	citizenship = infantDetails.getString("citizenship")
-	fathern = infantDetails.getString("fathern")
-	mothern = infantDetails.getString("mothern")
-	dateofbirth = infantDetails.getString("dateofbirth")
-	placeofbirth = infantDetails.getString("placeofbirth")
-	weight = infantDetails.getString("weight")
-	height = infantDetails.getString("height")
+    fname.setWidgetText(userDetails.getString("fname"))
+	lname.setWidgetText(infantDetails.getString("lname"))
+	mname.setWidgetText(infantDetails.getString("mname"))
+	gender.setWidgetText(infantDetails.getString("gender"))
+	citizenship.setWidgetText(infantDetails.getString("citizenship"))
+	fathermn.setWidgetText(infantDetails.getString("fathern"))
+	mothermn.setWidgetText(infantDetails.getString("mothern"))
+	dateofbirth.setWidgetText(infantDetails.getString("dateofbirth"))
+	placeofbirth.setWidgetText(infantDetails.getString("placeofbirth"))
+	weight.setWidgetText(infantDetails.getString("weight"))
+	height.setWidgetText(infantDetails.getString("height"))
 }
 
 func getWidgetTitle as string:
