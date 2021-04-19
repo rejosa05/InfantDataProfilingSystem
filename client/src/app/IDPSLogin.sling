@@ -49,6 +49,10 @@ ui LayerWidget
 						context.showErrorDialog("Wrong Username or Password")
 					}
 					else{
+						IDPSApiClient.getInstance().createLog(user.toDynamicMap(),func(res as DynamicMap){
+						},func(error as Error){
+                    	context.showErrorDialog("Failed To Save")
+						})
 						var thisWidget final = this
 						var nav = NavigationWidget.findNavigationWidget(thisWidget)
 						nav.popWidget()
