@@ -34,6 +34,8 @@ func createTableUser as SQLTableInfo
     return tbl
 }
 
+
+
 func createUsers(db as MySQLDatabase, usermodel as UserModel) as UserModel
 {
     assert usermodel
@@ -78,4 +80,20 @@ func login(db as MySQLDatabase, loginConstraints as DynamicMap) as DynamicMap
     var data = new DynamicMap()
     data.setObject("records", v)
     return data
+}
+
+func deleteUser (db as MySQLDatabase, userId as string) as bool
+{
+    var userTbl = new UserModel()
+    userTbl.setUserIdValue(String.toInteger(userId))
+    return db.executeSync(db.prepareDeleteStatementSync(USER, userTbl.toDynamicMap()))
+}
+
+func editUser (db as MySQLDatabase, userId as string, dataTbl as UserModel) as bool
+{
+    assert dataTbl
+    dataTbl.setUpdatedAtValue(SystemClock.asUTCSeconds())
+    var userTbl = new UserModel()
+    userTbl.setInfantIdValue(String.toInteger(userId))
+    return db.executeSync(db.prepareUpdateStatementSync(USER, userTbl.toDynamicMap(), dataTbl.toDynamicMap()))
 }
