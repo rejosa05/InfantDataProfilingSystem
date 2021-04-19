@@ -97,6 +97,7 @@ func initializeWidget override
     fnameInput.setWidgetText(userDetails.getString("fname"))
     lnameInput.setWidgetText(userDetails.getString("lname"))
     emailInput.setWidgetText(userDetails.getString("email"))
+    userInput.setWidgetText(userDetails.getString("username"))
     passwordInput.setWidgetText(userDetails.getString("password"))
     re_passwordInput.setWidgetText(userDetails.getString("re_password"))
     //fname = userDetails.getString("fname")
