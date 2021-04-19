@@ -36,6 +36,7 @@ func updateTables
 {
     updateTable(IDPSUsertbl.createTableUser())
     updateTable(IDPSInfanttbl.createTableInfant())
+    updateTable(IDPSUserLogtbl.createTableLog())
 }
 
 func close
