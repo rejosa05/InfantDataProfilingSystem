@@ -40,6 +40,12 @@ GET "/getuser"
     sendOk user
 }
 
+GET "/getlog"
+{
+    var log = assert IDPSUserLogtbl.getLoguser(getDatabase().getDb())
+    sendOk log
+}
+
 POST "/insertUser"
 {
     var reqData = assert RequestUser.forJsonString(req.getBodyString()):
@@ -52,6 +58,17 @@ POST "/insertUser"
     u.setPassword(reqData.getPassword())
     u.setRe_password(reqData.getRe_password())
     var account = assert IDPSUsertbl.createUsers(getDatabase().getDb(), u):
+        sendError "failedToSave"
+    sendOk account
+}
+
+POST "/log"
+{
+    var reqData = assert RequestUser.forJsonString(req.getBodyString()):
+        sendError "invalidRequest"
+    var u = new IDPSUserLogtbl.LogModel
+    u.setUsername(reqData.getUsername())
+    var account = assert IDPSUserLogtbl.createLog(getDatabase().getDb(), u):
         sendError "failedToSave"
     sendOk account
 }
@@ -75,6 +92,57 @@ POST "/insertInfant"
     var infant = assert IDPSInfanttbl.addInfants(getDatabase().getDb(), infnt):
         sendError "failedToSave"
     sendOk infant
+}
+
+DELETE "/deleteInfant/:id"
+{
+    assert IDPSInfanttbl.deleteInfant(getDatabase().getDb(), vars.getString("id")):
+        sendError "failedToDeleteTask"
+    sendOk
+}
+
+DELETE "/deleteUser/:id"
+{
+    assert IDPSUsertbl.deleteInfant(getDatabase().getDb(), vars.getString("id")):
+        sendError "failedToDeleteTask"
+    sendOk
+}
+
+PUT "/editInfant/:id"
+{
+    var reqData = assert RequestInfant.forJsonString(req.getBodyString()):
+        sendError "invalidRequest"
+    var infnt = new IDPSInfanttbl.TableModelInfant
+    infnt.setFname(reqData.getFname())
+    infnt.setLname(reqData.getLname())
+    infnt.setMname(reqData.getMname())
+    infnt.setGender(reqData.getGender())
+    infnt.setCitizenship(reqData.getCitizenship())
+    infnt.setFathermn(reqData.getFathermn())
+    infnt.setMothermn(reqData.getMothermn())
+    infnt.setDateofbirth(reqData.getDateofbirth())
+    infnt.setPlaceofbirth(reqData.getPlaceofbirth())
+    infnt.setWeight(reqData.getWeight())
+    infnt.setHeight(reqData.getHeight())
+    assert IDPSInfanttbl.editInfant(getDatabase().getDb(), vars.getString("id"), infnt):
+        sendError "failedToUpdateUser"
+    sendOk
+}
+
+PUT "/editUser/:id"
+{
+    var reqData = assert RequestUser.forJsonString(req.getBodyString()):
+        sendError "invalidRequest"
+    var u = new IDPSUsertbl.UserModel
+    u.setFname(reqData.getFname())
+    u.setLname(reqData.getLname())
+    u.setEmail(reqData.getEmail())
+    u.setUsername(reqData.getUsername())
+    u.setPassword(reqData.getPassword())
+    u.setRe_password(reqData.getRe_password())
+    assert IDPSUsertbl.edituser(getDatabase().getDb(), vars.getString("id"), u):
+        sendError "failedToUpdateUser"
+    sendOk
 }
 
 POST "/login"
