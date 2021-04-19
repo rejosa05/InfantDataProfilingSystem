@@ -1,0 +1,52 @@
+import jk.sql
+import jk.mysql
+import jk.time
+
+class is IDPSDatabase:
+
+const LOG = "idps_log"
+
+model LogModel static
+{
+    id as int
+    username as string
+    createdAt as long
+}
+
+func createTableLog as SQLTableInfo
+{
+    var tbl = SQLTableInfo.forName(LOG)
+    tbl.addIntegerKeyColumn("id")
+    tbl.addStringColumn("username")
+    tbl.addLongColumn("createdAt")
+    return tbl
+}
+
+func createLog(db as MySQLDatabase, log as LogModel) as LogModel
+{
+    assert log
+    log.setCreatedAtValue(SystemClock.asUTCSeconds())
+    assert db.executeSync(db.prepareInsertStatementSync(LOG, log.toDynamicMap()))
+    return log
+}
+
+func getLoguser (db as MySQLDatabase) as DynamicMap
+{
+    var v = new vector<LogModel>
+    var it = assert db.querySync(db.prepareQueryAllStatementSync(LOG)):
+        return null
+    while it {
+        var o = it.next()
+        if not o:
+            break
+        var infant = LogModel.forJsonObject(o)
+        if not infant:
+            continue
+        v += infant
+    }
+    var d = new DynamicMap()
+    d.setObject("records", v)
+    return d
+}
+
+// - Rolly - //
