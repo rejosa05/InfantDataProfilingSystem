@@ -19,7 +19,7 @@ ui LayerWidget
 		DataGridWidget grid : 1.0 {
 		}
         ButtonWidget viewEmployee {
-			text = "List of Authorized Employee"
+			text = "Authorized Employee"
 			clickHandler = func {
                 var thisWidget final = this
                 var nav = NavigationWidget.findNavigationWidget(thisWidget)
@@ -43,6 +43,15 @@ ui LayerWidget
                 var nav = NavigationWidget.findNavigationWidget(thisWidget)
                 nav.popWidget()
                 nav.pushWidget(new IDPSRegistration(context))
+			}
+		}
+        ButtonWidget logOut {
+			text = "Log Out"
+			clickHandler = func {
+                var thisWidget final = this
+                var nav = NavigationWidget.findNavigationWidget(thisWidget)
+                nav.popWidget()
+                nav.pushWidget(new IDPSLogin(context))
 			}
 		}
 	}
