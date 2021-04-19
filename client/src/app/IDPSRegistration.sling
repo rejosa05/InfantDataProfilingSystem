@@ -11,8 +11,6 @@ model ModelUser
     username as string
     password as string
     re_password as string
-    createdAt as long
-    updatedAt as long
 }
 
 ui LayerWidget
@@ -32,9 +30,6 @@ ui LayerWidget
 					textColor = Color.forString("white")
 					textAlign = LabelWidget.ALIGN_CENTER
 				}
-                LabelWidget submitMessage{
-                    text = ""
-                }
 			}
 		}
         TextInputWidget fnameInput{
@@ -78,10 +73,6 @@ ui LayerWidget
                 nav.popWidget()
                 nav.pushWidget(new IDPSDashboard(context))
             }
-        }
-        VerticalBoxWidget list{
-            margin = context.getHeightValue("5mm")
-            spacing = context.getHeightValue("5mm")
         }
         ButtonWidget backtoLoginButton{
 			text = "Back to Login"
