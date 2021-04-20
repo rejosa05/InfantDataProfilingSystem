@@ -11,6 +11,8 @@ model ModelUser
     username as string
     password as string
     re_password as string
+    createdAt as long
+    updatedAt as long
 }
 
 ui LayerWidget
@@ -30,6 +32,9 @@ ui LayerWidget
 					textColor = Color.forString("white")
 					textAlign = LabelWidget.ALIGN_CENTER
 				}
+                LabelWidget submitMessage{
+                    text = ""
+                }
 			}
 		}
         TextInputWidget fnameInput{
@@ -75,7 +80,7 @@ ui LayerWidget
             }
         }
         ButtonWidget backtoLoginButton{
-			text = "Back to Login"
+			text = "Cancel"
 			textColor = Color.instance("#87CEFA")
 			clickHandler = func {
 				var thisWidget final = this
