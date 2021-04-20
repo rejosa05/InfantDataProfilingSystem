@@ -103,7 +103,7 @@ DELETE "/deleteInfant/:id"
 
 DELETE "/deleteUser/:id"
 {
-    assert IDPSUsertbl.deleteInfant(getDatabase().getDb(), vars.getString("id")):
+    assert IDPSUsertbl.deleteUser(getDatabase().getDb(), vars.getString("id")):
         sendError "failedToDeleteTask"
     sendOk
 }
@@ -140,7 +140,7 @@ PUT "/editUser/:id"
     u.setUsername(reqData.getUsername())
     u.setPassword(reqData.getPassword())
     u.setRe_password(reqData.getRe_password())
-    assert IDPSUsertbl.edituser(getDatabase().getDb(), vars.getString("id"), u):
+    assert IDPSUsertbl.editUser(getDatabase().getDb(), vars.getString("id"), u):
         sendError "failedToUpdateUser"
     sendOk
 }
