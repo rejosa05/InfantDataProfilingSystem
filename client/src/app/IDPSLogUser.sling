@@ -1,0 +1,72 @@
+import jk.widget.common
+import jk.widget
+import jk.widget.datagrid
+import jk.time.format
+
+class is TitledWidget #widget:
+
+ui LayerWidget
+{
+	CanvasWidget {
+		color = Color.forString("#CCCCCC")
+	}
+	VerticalBoxWidget {
+		margin = context.getHeightValue("1mm")
+		spacing = context.getHeightValue("1mm")
+        LabelWidget submitMessage{
+            text = "User Log"
+            textAlign = LabelWidget.ALIGN_CENTER
+        }
+		DataGridWidget grid : 1.0 {
+		}
+        ButtonWidget viewUser {
+			text = "Authorized Employee"
+			clickHandler = func {
+                var thisWidget final = this
+                var nav = NavigationWidget.findNavigationWidget(thisWidget)
+                nav.popWidget()
+                nav.pushWidget(new IDPSUserd(context))
+			}
+		}
+
+        ButtonWidget logOut {
+			text = "Log Out"
+			clickHandler = func {
+                var thisWidget final = this
+                var nav = NavigationWidget.findNavigationWidget(thisWidget)
+                nav.popWidget()
+                nav.pushWidget(new IDPSLogin(context))
+			}
+		}
+	}
+}
+
+func initializeWidget override
+{
+	base.initializeWidget()
+	grid.addColumn("Id", "id", 0.2)
+    grid.addColumn("Username", "username", 1.0)
+    grid.addColumn("Date", "date", 1.0)
+
+	grid.addWidgetHeaderRow()
+    logHistory()
+}
+
+func logHistory
+{
+    IDPSApiClient.getInstance().getLog(func(response as DynamicMap) {
+        var data = assert response.getDynamicMap("data")
+        var records = data.getDynamicVector("records")
+        if not records ||  records.getSize() < 1 {
+             grid.addRow([ "NO data"])
+        }
+        else {
+            foreach record as DynamicMap in records.toVector() {
+				grid.addRow([record.getString("id"), record.getString("username"), VerboseDateTimeString.getDateStringForDateTime( DateTime.forSeconds( record.getLongInteger("createAt") ) )])
+            }
+        }
+    })
+}
+
+func getWidgetTitle as string:
+    return VALUE "title"
