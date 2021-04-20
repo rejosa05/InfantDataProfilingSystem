@@ -39,37 +39,70 @@ ui LayerWidget
 				}
 			}
 		}
+        LabelWidget ln {
+            text = "Last Name"
+        }
         TextInputWidget lname{
             placeholder = "Last Name"
+        }
+        LabelWidget fn {
+            text = "First Name"
         }
         TextInputWidget fname{
             placeholder = "First Name"
         }
+        LabelWidget mn {
+            text = "Middle Name"
+        }
         TextInputWidget mname{
             placeholder = "Middle Name"
+        }
+        LabelWidget g {
+            text = "Gender"
         }
 		TextInputWidget gender{
             placeholder = "Gender"
         }
+        LabelWidget c {
+            text = "Citizenship"
+        }
 		TextInputWidget citizenship{
             placeholder = "Citizenship"
+        }
+        LabelWidget fnm {
+            text = "Fathers Maiden Name"
         }
 		TextInputWidget fathern{
             placeholder = "Fathers Maiden Name"
         }
+        LabelWidget mnm {
+            text = "Mothers Mainden Name"
+        }
 		TextInputWidget mothern{
             placeholder = "Mothers Maiden Name"
         }
+        LabelWidget b {
+            text = "Birthday"
+        }
 		TextInputWidget dateofbirth{
 			placeholder = "MM-DD-YY"
+        }
+        LabelWidget pb {
+            text = "Place of Birth"
         }
 		TextInputWidget placeofbirth{
 			type = TextInputWidget.TYPE_STREET_ADDRESS
             placeholder = "Place of Birth"
         }
+        LabelWidget h {
+            text = "Height"
+        }
 		TextInputWidget height{
 			type = TextInputWidget.TYPE_FLOAT
             placeholder = "cm"
+        }
+        LabelWidget w {
+            text = "Weight"
         }
 		TextInputWidget weight{
 			type = TextInputWidget.TYPE_FLOAT
@@ -116,13 +149,13 @@ func initializeWidget override
 {
     base.initializeWidget()
     infantId = infantDetails.getInteger("infantId")
-    fname.setWidgetText(userDetails.getString("fname"))
+    fname.setWidgetText(infantDetails.getString("fname"))
 	lname.setWidgetText(infantDetails.getString("lname"))
 	mname.setWidgetText(infantDetails.getString("mname"))
 	gender.setWidgetText(infantDetails.getString("gender"))
 	citizenship.setWidgetText(infantDetails.getString("citizenship"))
-	fathermn.setWidgetText(infantDetails.getString("fathern"))
-	mothermn.setWidgetText(infantDetails.getString("mothern"))
+	fathern.setWidgetText(infantDetails.getString("fathermn"))
+	mothern.setWidgetText(infantDetails.getString("mothermn"))
 	dateofbirth.setWidgetText(infantDetails.getString("dateofbirth"))
 	placeofbirth.setWidgetText(infantDetails.getString("placeofbirth"))
 	weight.setWidgetText(infantDetails.getString("weight"))
