@@ -15,7 +15,7 @@ func create(context as GuiApplicationContext, parentWidget as Widget = null) sta
 {
     assert context
     instance = new this()
-    instance.setApiUrl("http://ec2-54-251-29-250.ap-southeast-1.compute.amazonaws.com:30221")
+    instance.setApiUrl("http://ec2-54-179-146-170.ap-southeast-1.compute.amazonaws.com:30221")
     instance.setContext(context)
     if parentWidget:
         instance.setParentWidget(parentWidget)
@@ -66,7 +66,7 @@ func getInfant(callback as function<void,DynamicMap>, errorCallback as function<
     doGet("/getinfant", callback, errorCallback)
 
 func getLog(callback as function<void,DynamicMap>, errorCallback as function<void, Error> = null):
-    doGet("/getinfant", callback, errorCallback) 
+    doGet("/getlog", callback, errorCallback) 
 
 func login(data as DynamicMap, callback as function<void, DynamicMap>, errorCallback as function<void, Error>):
     doPost("/login", data, callback, errorCallback)
