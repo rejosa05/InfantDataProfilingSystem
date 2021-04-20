@@ -1,57 +1,90 @@
 import jk.widget.common
 import jk.widget
-import jk.widget.datagrid
 
 class is TitledWidget #widget:
 
+pvar userDetails as DynamicMap
+pvar userId as int
+
+model ModelUser
+{
+    fname as string
+    lname as string
+    email as string
+    username as string
+    password as string
+    re_password as string
+    createdAt as long
+    updatedAt as long
+}
+
 ui LayerWidget
 {
-	CanvasWidget {
-		color = Color.forString("#CCCCCC")
-	}
-	VerticalBoxWidget {
-		margin = context.getHeightValue("1mm")
-		spacing = context.getHeightValue("1mm")
-        LabelWidget submitMessage{
-            text = "All Employeees"
-            textAlign = LabelWidget.ALIGN_CENTER
-        }
-		DataGridWidget grid : 1.0 {
-		}
-        ButtonWidget viewInfants {
-			text = "List of Infants"
-			clickHandler = func {
-                var thisWidget final = this
-                var nav = NavigationWidget.findNavigationWidget(thisWidget)
-                nav.popWidget()
-                nav.pushWidget(new IDPSDashboard(context))
+    VerticalBoxWidget {
+		margin = context.getHeightValue("40mm")
+		spacing = context.getHeightValue("0.5mm")
+		LayerWidget {
+			CanvasWidget {
+				color = Color.forString("black")
+			}
+			LayerWidget {
+				margin = context.getHeightValue("5mm")
+                
+				LabelWidget myLabel {
+					text = "Edit User Information"
+					textColor = Color.forString("white")
+					textAlign = LabelWidget.ALIGN_CENTER
+				}
 			}
 		}
-		ButtonWidget addInfant {
-			text = "Add Infants"
+        TextInputWidget fnameInput{
+            placeholder = "First Name"
+        }
+        TextInputWidget lnameInput{
+            placeholder = "Last Name"
+        }
+        TextInputWidget emailInput{
+            placeholder = "Email@email.com"
+            type = TextInputWidget.TYPE_EMAIL_ADDRESS
+        }
+        TextInputWidget userInput{
+            placeholder = "Username"
+        }
+        TextInputWidget passwordInput{
+            placeholder = "Password"
+            type = TextInputWidget.TYPE_PASSWORD
+        }
+        TextInputWidget re_passwordInput{
+            placeholder = "Re Enter Passsword"
+            type = TextInputWidget.TYPE_PASSWORD
+        }
+        ButtonWidget registerButton{
+            text = "Update"
+            clickHandler = func{
+                var user = new ModelUser
+                user.setFname(fnameInput.getWidgetText())
+                user.setLname(lnameInput.getWidgetText())
+                user.setEmail(emailInput.getWidgetText())
+                user.setUsername(userInput.getWidgetText())
+                user.setPassword(passwordInput.getWidgetText())
+                user.setRe_password(re_passwordInput.getWidgetText())
+                IDPSApiClient.getInstance().editUser(String.forInteger(userId), user.toDynamicMap(), func(res as DynamicMap){
+                    context.showErrorDialog("Update Successfully")
+					var thisWidget final = this
+					var nav = NavigationWidget.findNavigationWidget(thisWidget)
+                },func(error as Error){
+                    context.showErrorDialog("Failed To Update")
+                })
+            }
+        }
+        ButtonWidget backtodashboard{
+			text = "Cancel"
+			textColor = Color.instance("#87CEFA")
 			clickHandler = func {
 				var thisWidget final = this
-                var nav = NavigationWidget.findNavigationWidget(thisWidget)
-                nav.popWidget()
-                nav.pushWidget(new IDPSAdd(context))
-			}
-		}
-        ButtonWidget addEmployee {
-			text = "Add Employeee"
-			clickHandler = func {
-                var thisWidget final = this
-                var nav = NavigationWidget.findNavigationWidget(thisWidget)
-                nav.popWidget()
-                nav.pushWidget(new IDPSRegistration(context))
-			}
-		}
-        ButtonWidget logOut {
-			text = "Log Out"
-			clickHandler = func {
-                var thisWidget final = this
-                var nav = NavigationWidget.findNavigationWidget(thisWidget)
-                nav.popWidget()
-                nav.pushWidget(new IDPSLogin(context))
+				var nav = NavigationWidget.findNavigationWidget(thisWidget)
+				nav.popWidget()
+				nav.pushWidget(new IDPSUserd(context))
 			}
 		}
 	}
@@ -59,91 +92,20 @@ ui LayerWidget
 
 func initializeWidget override
 {
-	base.initializeWidget()
-	grid.addColumn("Id", "id", 0.2)
-	grid.addColumn("Name", "name", 1.0)
-    grid.addColumn("Email", "email", 1.0)
-    grid.addColumn("Username", "username", 1.0)
-    grid.addColumn("Password", "password", 1.0)
-    grid.addColumn("Re Password", "re_password", 1.0)
-
-	grid.addWidgetHeaderRow()
-    loadUser()
+    base.initializeWidget()
+    userId = userDetails.getInteger("userId")
+    fnameInput.setWidgetText(userDetails.getString("fname"))
+    lnameInput.setWidgetText(userDetails.getString("lname"))
+    emailInput.setWidgetText(userDetails.getString("email"))
+    userInput.setWidgetText(userDetails.getString("username"))
+    passwordInput.setWidgetText(userDetails.getString("password"))
+    re_passwordInput.setWidgetText(userDetails.getString("re_password"))
+    //fname = userDetails.getString("fname")
+    //lname = userDetails.getString("lname")
+    //email = userDetails.getString("email")
+    //fname = userDetails.getString("password")
+    //fname = userDetails.getString("re_password")
 }
-
-func loadUser
-{
-    IDPSApiClient.getInstance().getUser(func(response as DynamicMap) {
-        var data = assert response.getDynamicMap("data")
-        var records = data.getDynamicVector("records")
-        if not records ||  records.getSize() < 1 {
-             grid.addRow([ "NO data"])
-        }
-        else {
-            foreach record as DynamicMap in records.toVector() {
-                addGrid(grid, record)
-            }
-        }
-    })
-}
-
-func addGrid(g as DataGridWidget, record as DynamicMap)
-{
-    var popIn = VerticalBoxWidget.forContext(context)
-    var backColor = new LayerWithBackgroundColorWidget(context)
-    var pop =  PopupWidget.forContentWidget(context, backColor)
-    var popMes = HorizontalBoxWidget.forContext(context)
-    var popButs = HorizontalBoxWidget.forContext(context)
-    var editBtn = TextButtonWidget.forText(context, "Edit")
-    var deleteBtn = TextButtonWidget.forText(context, "Delete")
-    var cancelBtn = TextButtonWidget.forText(context, "Cancel")
-
-    backColor.setWidgetColor(Color.white())
-    backColor.addWidget(popIn)
-    Widget.setLayoutSize(backColor,context.getWidthValue("200mm"),context.getHeightValue("120mm"))
-    
-    popIn.setWidgetMargin(context.getHeightValue("5mm"))
-    pop.setWidgetModal(true)
-  
-    editBtn.setWidgetClickHandler(func{
-        pop.hidePopup()
-        var thisWidget final = this
-        var nav = NavigationWidget.findNavigationWidget(thisWidget)
-        nav.pushWidget(new IDPSUserEdit(context).setUserDetails(record))
-    })
-
-    deleteBtn.setWidgetClickHandler(func{
-        context.showConfirmDialog("DELETING .....", "Do you want to delete this Data?",func{
-            IDPSApiClient.getInstance().deleteUser(record.getString("userId"),func(resp as DynamicMap){
-                context.showMessageDialog("Success","Data has been Deleted",func{
-                    pop.hidePopup()
-                    loadUser()
-                })
-            },func(e as Error){
-                context.showErrorDialog("Failed to delete!",func{
-                    pop.hidePopup()
-                })
-            })
-        },func{
-            pop.hidePopup()
-        })
-    })
-
-    cancelBtn.setWidgetClickHandler(func{
-        pop.hidePopup()
-    })
-    popMes.addWidget(LabelWidget.forText(context, "What do you want to do with this record?"))
-    popButs.addWidget(editBtn,1.0)
-    popButs.addWidget(deleteBtn,1.0)
-    popButs.addWidget(cancelBtn,1.0)
-
-    popIn.addWidget(popMes, 1.0)
-    popIn.addWidget(popButs, 1.0)
-    var name = record.getString("lname") .. " , " .. record.getString("fname")
-    g.addRow([record.getString("userId"), name , record.getString("email"), record.getString("username"), record.getString("password"), record.getString("re_password")], func{
-        pop.showPopup(backColor)
-    })
-}
-
 func getWidgetTitle as string:
-    return VALUE "title"
+    return "Eqela"
+    
