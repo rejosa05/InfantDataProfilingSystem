@@ -48,5 +48,3 @@ func getLoguser (db as MySQLDatabase) as DynamicMap
     d.setObject("records", v)
     return d
 }
-
-// - Rolly - //
