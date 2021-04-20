@@ -94,6 +94,6 @@ func editUser (db as MySQLDatabase, userId as string, dataTbl as UserModel) as b
     assert dataTbl
     dataTbl.setUpdatedAtValue(SystemClock.asUTCSeconds())
     var userTbl = new UserModel()
-    userTbl.setInfantIdValue(String.toInteger(userId))
+    userTbl.setUserIdValue(String.toInteger(userId))
     return db.executeSync(db.prepareUpdateStatementSync(USER, userTbl.toDynamicMap(), dataTbl.toDynamicMap()))
 }
