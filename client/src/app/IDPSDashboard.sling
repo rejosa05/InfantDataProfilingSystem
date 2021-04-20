@@ -1,6 +1,7 @@
 import jk.widget.common
 import jk.widget
 import jk.widget.datagrid
+import jk.time.format
 
 class is TitledWidget #widget:
 
@@ -61,16 +62,17 @@ func initializeWidget override
 {
 	base.initializeWidget()
 	grid.addColumn("Id", "id", .5)
-	grid.addColumn("Last Name", "name", 1.0)
-    grid.addColumn("First Name", "lname", 1.0)
+	grid.addColumn("Last Name", "lname", 1.0)
+    grid.addColumn("First Name", "fname", 1.0)
     grid.addColumn("Middle Name", "mname", 1.0)
     grid.addColumn("Gender", "gender", 1.0)
     grid.addColumn("Birthday", "birthday", 1.0)
     grid.addColumn("Place of Birth", "place of birth", 1.0)
     grid.addColumn("Citizenship", "citizenship", 1.0)
     grid.addColumn("Parents Name", "parents name", 1.0)
-    grid.addColumn("Weight", "weight", 1.0)
-    grid.addColumn("Height", "height", 1.0)
+    grid.addColumn("Weight (kg)", "weight", 1.0)
+    grid.addColumn("Height (cm)", "height", 1.0)
+    grid.addColumn("CreatedAt", "createdat", 1.0)
     
 	grid.addWidgetHeaderRow()
     loadInfants()
@@ -146,7 +148,7 @@ func addGrid(g as DataGridWidget, record as DynamicMap)
     popIn.addWidget(popMes, 1.0)
     popIn.addWidget(popButs, 1.0)
     var familyname = record.getString("fathermn") .. " , " .. record.getString("mothermn")  
-    g.addRow([record.getString("infantId"), record.getString("lname"), record.getString("fname"), record.getString("mname"), record.getString("gender"), record.getString("dateofbirth"), record.getString("placeofbirth"), record.getString("citizenship"), familyname, record.getString("weight"), record.getString("height") ], func{
+    g.addRow([record.getString("infantId"), record.getString("lname"), record.getString("fname"), record.getString("mname"), record.getString("gender"), record.getString("dateofbirth"), record.getString("placeofbirth"), record.getString("citizenship"), familyname, record.getString("weight"), record.getString("height"), VerboseDateTimeString.getDateStringForDateTime( DateTime.forSeconds( record.getLongInteger("createdAt"))) ], func{
         pop.showPopup(backColor)
     })
 }
